@@ -37,7 +37,7 @@
 
 ## ADMIN Dashboard
 * Login + Logout + Create admin 
-* Create new:-  Cousin   ( waiter table)
+* Create new:-  Cuisine   ( waiter table)
 * Remove waiters 
 * total waiters 
 

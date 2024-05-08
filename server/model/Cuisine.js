@@ -1,7 +1,7 @@
 const mongoose = require("mongoose")
 
 const cuisineSchema = new mongoose.Schema({
-    name: {
+    product_name: {
         type: String,
         required: true 
     },
@@ -14,8 +14,6 @@ const cuisineSchema = new mongoose.Schema({
         type: Number,
         required: true 
     }
-
-
 
 })
 

@@ -155,8 +155,63 @@ router.post("/add-new-Table", async (req, res) => {
     }
 });
 
-// Cousine
+// ##Cousine
 
+
+// Get Product by Cuisine
+
+router.get("/fetch-items/starter", async (req, res) => {
+    try {
+        const starterProducts = await Cuisine.find({ category: "Starter" })
+        if (!starterProducts) {
+            return res.status(401).json("No items founds")
+        }
+        return res.status(200).json({ message: "Fetch success", starterProducts })
+    } catch (error) {
+        return res.status(500).json({ message: "Something went wrong", error: error.message })
+    }
+})
+router.get("/fetch-items/main-course", async (req, res) => {
+    try {
+        const starterProducts = await Cuisine.find({ category: "MainCourse" })
+        if (!starterProducts) {
+            return res.status(401).json("No items founds")
+        }
+        return res.status(200).json({ message: "Fetch success", starterProducts })
+    } catch (error) {
+        return res.status(500).json({ message: "Something went wrong", error: error.message })
+    }
+})
+
+router.get("/fetch-items/beverage", async (req, res) => {
+    try {
+        const starterProducts = await Cuisine.find({ category: "Beverage" })
+        if (!starterProducts) {
+            return res.status(401).json("No items founds")
+        }
+        return res.status(200).json({ message: "Fetch success", starterProducts })
+    } catch (error) {
+        return res.status(500).json({ message: "Something went wrong", error: error.message })
+    }
+})
+router.get("/fetch-items/dessert", async (req, res) => {
+    try {
+        const starterProducts = await Cuisine.find({ category: "Dessert" })
+        if (!starterProducts) {
+            return res.status(401).json("No items founds")
+        }
+        return res.status(200).json({ message: "Fetch success", starterProducts })
+    } catch (error) {
+        return res.status(500).json({ message: "Something went wrong", error: error.message })
+    }
+})
+
+
+// Get single product
+
+
+
+// add new Product
 router.post("/add-new-item", async (req, res) => {
     try {
         const newItem = await Cuisine.create(req.body)
@@ -165,7 +220,42 @@ router.post("/add-new-item", async (req, res) => {
         return res.status(500).json({ message: "Something went wrong", error: error.message })
     }
 })
-//update Price,  delete Product, get all product, get single product
+
+// Update new product
+router.put('/update-item/:id', async (req, res) => {
+    const { id } = req.params;
+    const updates = { product_name, category, price } = req.body;
+
+    try {
+        const product = await Cuisine.findByIdAndUpdate(
+            id,
+            { $set: updates },
+            { new: true }
+        );
+
+        if (!product) {
+            return res.status(404).json({ message: "Product not found" });
+        }
+
+        return res.status(200).json({ message: "Update success", product });
+    } catch (error) {
+        return res.status(500).json({ message: "Something went wrong", error: error.message });
+    }
+});
+
+// delete Product ⚠⚠⚠
+router.delete('/delete-item/:id', async (req, res) => {
+    const { id } = req.params
+    try {
+        const product = await Cuisine.findByIdAndDelete(id)
+        if (!product) {
+            return res.status(401).json({ message: "Product not found" })
+        }
+        return res.status(200).json({ message: "Item deleted sucessfully", product })
+    } catch (error) {
+        return res.status(500).json({ message: "Something went wrong", error: error.message })
+    }
+})
 
 
 module.exports = router

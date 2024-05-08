@@ -157,6 +157,33 @@ router.post("/add-new-Table", async (req, res) => {
 
 // ##Cousine
 
+// Get all products
+
+router.get("/item", async (req, res) => {
+    try {
+        const allProducts = await Cuisine.find({})
+        if (!allProducts) {
+            return  res.status(401).json({message:"Error while fetching data"})
+        }
+        return res.status(200).json({ message: "Fetch success", allProducts })
+    } catch (error) {
+
+    }
+})
+
+// Get single product
+router.get('/item/:id', async (req, res) => {
+    const { id } = req.params
+    try {
+        const product = await Cuisine.findById(id)
+        if (!product) {
+            return res.status(401).json({ message: "Product not found", error: error.message })
+        }
+        return res.status(200).json({ message: "Product fetch success", product })
+    } catch (error) {
+        return res.status(500).json({ message: "Something went wrong", error: error.message })
+    }
+})
 
 // Get Product by Cuisine
 
@@ -207,7 +234,6 @@ router.get("/fetch-items/dessert", async (req, res) => {
 })
 
 
-// Get single product
 
 
 

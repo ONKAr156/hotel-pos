@@ -5,6 +5,7 @@ import AddCuisines from '../components/AddCuisines'
 import AddTables from '../components/AddTables'
 import Customer from '../components/Customer'
 import Inventory from '../components/Inventory'
+import CurrentOrder from '../components/CurrentOrder'
 
 const AdminDash = () => {
     const [toggle, setToggle] = useState(true)
@@ -30,6 +31,9 @@ const AdminDash = () => {
                                 onClick={e => setToggle("Table")}><i class="bi bi-plus-square"></i> Table</p>
                             <p
                                 className='p-1 text-lg'
+                                onClick={e => setToggle("Order")}><i class="bi bi-cup-hot"></i> Live-Order</p>
+                            <p
+                                className='p-1 text-lg'
                                 onClick={e => setToggle("Customer")}><i class="bi bi-person-walking"></i> Customer</p>
                         </div>
 
@@ -41,7 +45,14 @@ const AdminDash = () => {
 
                 <div className='col-span-10 p-2   bg-slate-50 h-full rounded-md shadow-md'>
                     {
-                        toggle === "Home" ? <Home /> : toggle === "Waiter" ? <AddWaiter /> : toggle === "Cuisine" ? <AddCuisines /> : toggle === "Table" ? <AddTables /> : toggle === 'Customer' ? <Customer /> : toggle === "Inventory" ? <Inventory /> : <Home />
+                        toggle === "Home" ? <Home />
+                            : toggle === "Waiter" ? <AddWaiter />
+                                : toggle === "Cuisine" ? <AddCuisines />
+                                    : toggle === "Table" ? <AddTables />
+                                        : toggle === 'Customer' ? <Customer />
+                                            : toggle === "Inventory" ? <Inventory />
+                                                : toggle === "Order" ? <CurrentOrder />
+                                                    : <Home />
                     }
                 </div>
 

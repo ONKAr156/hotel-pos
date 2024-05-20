@@ -141,6 +141,20 @@ router.get("/get-all-tables", async (req, res) => {
 });
 
 
+router.get("/get-all-tables/status", async (req, res) => {
+    try {
+        const orders = await Order.find({status:"Pending" }) // or { table: tableNumber } if you converted it above
+            .populate('items.cuisine')
+
+
+        return res.status(200).json(orders);
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ message: 'Server error: ' + error.message });
+    }
+});
+
+
 
 router.post('/orders/add-order/:table', async (req, res) => {
     const { table } = req.params;
@@ -252,7 +266,6 @@ router.post('/orders/add-order/:table', async (req, res) => {
 //         return res.status(500).json({ message: 'Server error: ' + error.message });
 //     }
 // });
-
 
 
 

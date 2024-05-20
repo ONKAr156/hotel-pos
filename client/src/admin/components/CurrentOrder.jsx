@@ -36,7 +36,13 @@ const CurrentOrder = () => {
                     </div>
                     <div className='flex justify-between items-center gap-2'>
                         <p><strong>Order Placed:</strong> </p>
-                        <p> {new Date(order.orderPlacedTime).toLocaleString()}</p>
+                        <p>{new Date(order.orderPlacedTime).toLocaleDateString("en-US", {
+                            year: 'numeric',
+                            month: 'long',
+                            day: 'numeric',
+                            hour: '2-digit',
+                            minute: '2-digit'
+                        })}</p>
                     </div>
 
                     <hr />

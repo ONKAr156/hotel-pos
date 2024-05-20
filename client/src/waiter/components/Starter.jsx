@@ -1,30 +1,65 @@
-import React, {  useState } from 'react'
+import React, { useEffect, useState } from 'react'
+import axios from 'axios'
+import { useParams } from 'react-router-dom'
+import { useSelector } from 'react-redux'
+import { useAddOrderMutation } from '../../redux/api/OrderApi'
 
 
-const Starter = () => {
-    const arr = [
-        { dish: 'Samosa', price: 50 },
-        { dish: 'Pakora', price: 60 },
-        { dish: 'Vegetable Cutlet', price: 70 },
-        { dish: 'Paneer Tikka', price: 150 },
-        { dish: 'Chicken Tikka', price: 180 },
-        { dish: 'Tandoori Chicken', price: 200 },
-        { dish: 'Fish Amritsari', price: 220 },
-        { dish: 'Aloo Chaat', price: 80 },
-        { dish: 'Dahi Puri', price: 90 },
-        { dish: 'Papdi Chaat', price: 100 }
-    ];
-    const [data, setData] = useState()
-    console.log(data);
+const Starter = ({ table }) => {
+    const [getData, setGetData] = useState([])
+    const [addData, setAddData] = useState()
+
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const starter = await axios.get("http://localhost:3000/api/waiter/fetch-items/starter");
+                // console.log(starter);
+                setGetData(starter.data.product)
+            } catch (error) {
+                console.error('Error fetching data: ', error);
+            }
+        };
+
+        fetchData();
+    }, []);
+
+    const params = useParams()
+    const data = useSelector(state => state.waiterData)
+
+    const tableId = params.id
+    const waiterId = data.waiterData.waiterLogin._id
+    const [addOrder, { isLoading: isAddingOrder }] = useAddOrderMutation()
+    const handleAddOrder = async (id) => {
+
+        try {
+            const order = await addOrder({
+                table: tableId, itemId: id, waiterId: waiterId
+            }).unwrap();
+            if (order.status === 201) {
+                console.log("Item added successfully:", order.data);
+            }
+        } catch (error) {
+            if (error.response) {
+                console.log("Error data from server:", error.response.data);
+                console.log("Error status from server:", error.response.status);
+            } else {
+                console.log("Error message:", error.message);
+            }
+        }
+    }
+
+
     return <>
 
         {
-            arr.map(item => <div className="m-2   bg-gray-800 text-white  rounded-lg shadow-md p-6" key={item.dish}>
-                <div className="flex flex-col flex-wrap gap-2 justify-between items-center">
+            getData && getData.map(item => <div
+                onClick={e => handleAddOrder(item._id)}
+                className="m-2   bg-gray-800 cursor-pointer text-white  rounded-lg shadow-md p-6" key={item.dish}>
+                <div className="flex flex-col flex-wrap gap-2 justify-between items-center ">
+
                     <div
-                        onClick={e => setData(item)}
                         className='flex flex-wrap'>
-                        <div className="text-xl font-bold"> {item.dish}</div>
+                        <div className="text-xl font-bold"> {item.product_name}</div>
                         <span className="px-3 py-2 rounded-full bg-slate-700 text-white text-sm mx-2">{item.price}</span>
                     </div>
 

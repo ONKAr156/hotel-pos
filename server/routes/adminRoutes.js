@@ -75,15 +75,17 @@ router.post('/logout', (req, res) => {
     }
 });
 
-// Waiters
+// ------------------------------------------------------------------------------
 
+
+// Waiters
 
 // Fetch all waiters  --------------------------------------------------------
 router.get('/fetch-waiter', async (req, res) => {
     try {
         // Fetch all waiter from the MongoDB collection
         const waiter = await Waiter.find();
-        res.status(200).json({ message: 'fetch successfull', totalWaiter: waiter.length, waiter });
+        res.status(200).json({ message: 'fetch successfull', waiter });
 
     } catch (error) {
         console.error('Error fetching waiter data:', error);
@@ -107,8 +109,14 @@ router.get('/fetch-waiter/:id', async (req, res) => {
 
 // Add new Wiaters -------------------------------------------------------------
 router.post('/add-waiter', async (req, res) => {
-    const { firstName, lastName, password, email, current_address, phone, age } = req.body
+    const { password, email, } = req.body
     try {
+        const checkExistingWaiterEmail = await Waiter.findOne({ email: email })
+
+        if (checkExistingWaiterEmail) {
+            return res.status(401).json({ message: "Email already existed" })
+        }
+
         const hashPassword = await bcrypt.hash(password, 10)
         const newWaiter = await Waiter.create({ ...req.body, password: hashPassword })
         return res.status(201).json({ message: "Waiter created successfully", newWaiter })
@@ -116,6 +124,39 @@ router.post('/add-waiter', async (req, res) => {
         return res.status(500).json({ message: 'Somethingwent wrong', error: error.message })
     }
 })
+
+// Update waiter data
+router.post('/update-waiter/:id', async (req, res) => {
+    const { id } = req.params;
+    const { password, email } = req.body;
+
+    try {
+        const waiterData = await Waiter.findById(id);
+        if (!waiterData) {
+            return res.status(404).json({ message: "Waiter not found" });
+        }
+
+        const hashPassword = await bcrypt.hash(password, 10);
+
+        const updatedWaiter = await Waiter.findByIdAndUpdate(id, {
+            ...req.body,
+            password: hashPassword
+        }, { new: true });
+
+        // Check if updating was successful
+        if (!updatedWaiter) {
+            return res.status(404).json({ message: "Unable to update waiter" });
+        }
+
+        return res.status(200).json({
+            message: "Waiter updated successfully",
+            waiter: updatedWaiter
+        });
+    } catch (error) {
+        return res.status(500).json({ message: 'Something went wrong', error: error.message });
+    }
+});
+
 
 // Delete  waiter  ⚠⚠⚠
 router.delete('/remove-waiter/:id', async (req, res) => {
@@ -128,8 +169,20 @@ router.delete('/remove-waiter/:id', async (req, res) => {
     }
 })
 
+// ------------------------------------------------------------------------------
 
 // Table 
+
+// Get all table 
+
+router.get("/get-all-tables", async (req, res) => {
+    try {
+        const allTables = await Table.find({})
+        res.status(201).json(allTables);
+    } catch (error) {
+        res.status(500).json({ message: "Internal server error", error: error.message });
+    }
+});
 
 // add New Table
 router.post("/add-new-Table", async (req, res) => {
@@ -155,6 +208,44 @@ router.post("/add-new-Table", async (req, res) => {
     }
 });
 
+
+// Update Table capacity
+router.put('/update-table/:id', async (req, res) => {
+    const tableId = req.params.id;
+    const newCapacity = req.body.capacity;
+
+    try {
+        const updatedTable = await Table.findOneAndUpdate(
+            { _id: tableId }, // Using MongoDB's default _id field
+            { capacity: newCapacity },
+            { new: true,} 
+        );
+
+        if (!updatedTable) {
+            return res.status(404).send('Table not found with id ' + tableId);
+        }
+
+        // Send back the updated table data
+        res.status(200).json(updatedTable);
+    } catch (error) {
+        // Handle any other errors
+        res.status(500).send(error.message);
+    }
+});
+
+router.delete("/delete-table/:id", async (req, res) => {
+    const { id } = req.params
+    try {
+        const deleteTable = await Table.findByIdAndDelete(id)
+        res.status(200).json({ message: 'Table deleted successfully', deleteTable });
+    } catch (error) {
+        res.status(500).json({ message: "Internal server error", error: error.message });
+    }
+});
+
+
+// ------------------------------------------------------------------------------
+
 // ##Cousine
 
 // Get all products
@@ -163,78 +254,13 @@ router.get("/item", async (req, res) => {
     try {
         const allProducts = await Cuisine.find({})
         if (!allProducts) {
-            return  res.status(401).json({message:"Error while fetching data"})
+            return res.status(401).json({ message: "Error while fetching data" })
         }
         return res.status(200).json({ message: "Fetch success", allProducts })
     } catch (error) {
 
     }
 })
-
-// Get single product
-router.get('/item/:id', async (req, res) => {
-    const { id } = req.params
-    try {
-        const product = await Cuisine.findById(id)
-        if (!product) {
-            return res.status(401).json({ message: "Product not found", error: error.message })
-        }
-        return res.status(200).json({ message: "Product fetch success", product })
-    } catch (error) {
-        return res.status(500).json({ message: "Something went wrong", error: error.message })
-    }
-})
-
-// Get Product by Cuisine
-
-router.get("/fetch-items/starter", async (req, res) => {
-    try {
-        const starterProducts = await Cuisine.find({ category: "Starter" })
-        if (!starterProducts) {
-            return res.status(401).json("No items founds")
-        }
-        return res.status(200).json({ message: "Fetch success", starterProducts })
-    } catch (error) {
-        return res.status(500).json({ message: "Something went wrong", error: error.message })
-    }
-})
-router.get("/fetch-items/main-course", async (req, res) => {
-    try {
-        const starterProducts = await Cuisine.find({ category: "MainCourse" })
-        if (!starterProducts) {
-            return res.status(401).json("No items founds")
-        }
-        return res.status(200).json({ message: "Fetch success", starterProducts })
-    } catch (error) {
-        return res.status(500).json({ message: "Something went wrong", error: error.message })
-    }
-})
-
-router.get("/fetch-items/beverage", async (req, res) => {
-    try {
-        const starterProducts = await Cuisine.find({ category: "Beverage" })
-        if (!starterProducts) {
-            return res.status(401).json("No items founds")
-        }
-        return res.status(200).json({ message: "Fetch success", starterProducts })
-    } catch (error) {
-        return res.status(500).json({ message: "Something went wrong", error: error.message })
-    }
-})
-router.get("/fetch-items/dessert", async (req, res) => {
-    try {
-        const starterProducts = await Cuisine.find({ category: "Dessert" })
-        if (!starterProducts) {
-            return res.status(401).json("No items founds")
-        }
-        return res.status(200).json({ message: "Fetch success", starterProducts })
-    } catch (error) {
-        return res.status(500).json({ message: "Something went wrong", error: error.message })
-    }
-})
-
-
-
 
 
 // add new Product

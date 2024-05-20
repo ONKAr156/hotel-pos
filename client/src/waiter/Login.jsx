@@ -1,17 +1,36 @@
-import React, { useState } from 'react'
-import { Link } from 'react-router-dom'
+import React, { useEffect, useState } from 'react'
+import { useNavigate } from 'react-router-dom';
+import { useWaiterLoginMutation } from '../redux/api/loginApi';
+
 
 const Login = () => {
     const [toggle, setToggle] = useState(false)
     const [inpData, setInpData] = useState()
-    const handelSubmit = (e) => {
+    const [loginError, setLoginError] = useState('');
+
+    const [loginWaiter, data,error] = useWaiterLoginMutation()
+    const navigate = useNavigate()
+
+    const handelSubmit = async (e) => {
         e.preventDefault()
         try {
             console.log(inpData);
+            const loginUser = await loginWaiter(inpData).unwrap();
+            if (loginUser) {
+                navigate(`/dashboard/${loginUser.waiterLogin._id}`)
+
+            }
+
         } catch (error) {
-            console.log(error);
+            console.error(error);
+            setLoginError( "Credentials didn't matched");
+            setTimeout(() => {
+                setLoginError("");
+            }, 2500)
         }
     }
+
+
     return <>
         <div className="flex min-h-screen items-center justify-center bg-gray-100 py-12 px-4 sm:px-6 lg:px-8 dark:bg-gray-900">
             <div className="w-full max-w-md space-y-8">
@@ -75,13 +94,13 @@ const Login = () => {
                         </div>
                     </div>
                     <div>
-                        <Link to={"/dashboard"}
+                        <button
                             className="flex w-full justify-center rounded-md border border-transparent bg-indigo-600 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:bg-indigo-500 dark:hover:bg-indigo-600 dark:focus:ring-indigo-600"
                             type="submit"
 
                         >
                             Login
-                        </Link>
+                        </button>
                     </div>
                     <div>
                         <button
@@ -92,9 +111,12 @@ const Login = () => {
                         </button>
                     </div>
                 </form>
+                <div className=' text-end text-white'>
+                    {loginError}
+                </div>
             </div>
         </div>
-        
+
 
     </>
 }

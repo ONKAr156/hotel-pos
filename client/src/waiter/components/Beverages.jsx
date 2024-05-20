@@ -1,33 +1,72 @@
-import React from 'react'
+import axios from 'axios';
+import React, { useEffect, useState } from 'react'
+import { useParams } from 'react-router-dom';
+import { useAddOrderMutation } from '../../redux/api/OrderApi';
+import { useSelector } from 'react-redux';
 
 const Beverages = () => {
-    const arr = [
-        { drink: 'Masala Chai', price: 50 },
-        { drink: 'Lassi', price: 70 },
-        { drink: 'Mango Lassi', price: 80 },
-        { drink: 'Thandai', price: 90 },
-        { drink: 'Badam Milk', price: 100 },
-        { drink: 'Rose Sherbet', price: 60 },
-        { drink: 'Chaas (Buttermilk)', price: 40 },
-        { drink: 'Filter Coffee', price: 60 },
-        { drink: 'Jaljeera', price: 50 },
-        { drink: 'Nimbu Pani', price: 40 },
-        { drink: 'Water Bottel', price: 20 },
-    ];
+    const [getData, setGetData] = useState([])
+    const params = useParams()
+    const data = useSelector(state => state.waiterData)
 
+    const tableId = params.id
+    const waiterId = data.waiterData.waiterLogin._id
+    const [addOrder, { isLoading: isAddingOrder }] = useAddOrderMutation()
+
+
+
+    const handleAddOrder = async (id) => {
+
+        try {
+            const order = await addOrder({
+                table: tableId, itemId: id, waiterId: waiterId
+            }).unwrap();
+            if (order.status === 201) {
+                console.log("Item added successfully:", order.data);
+            }
+        } catch (error) {
+            if (error.response) {
+                console.log("Error data from server:", error.response.data);
+                console.log("Error status from server:", error.response.status);
+            } else {
+                console.log("Error message:", error.message);
+            }
+        }
+    }
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const beverage = await axios.get("http://localhost:3000/api/waiter/fetch-items/beverage");
+                console.log(beverage);
+                setGetData(beverage.data.product)
+            } catch (error) {
+                console.error('Error fetching data: ', error);
+            }
+        };
+
+        fetchData();
+    }, []);
 
     return <>
         {
-            arr.map(item => <div className="m-2  bg-gray-800 text-white  rounded-lg shadow-md p-6">
-                <div className="flex flex-wrap justify-between items-center">
-                    <div className="text-xl font-bold"> {item.drink}</div>
-                    <span className="px-3 py-2 rounded-full bg-slate-700 text-white text-sm mx-2">{item.price}</span>
+            getData && getData.map(item => <div
+                onClick={e => handleAddOrder(item._id)}
+                className="m-2 cursor-pointer  bg-gray-800 text-white  rounded-lg shadow-md p-6" key={item.dish}>
+                <div className="flex flex-col flex-wrap gap-2 justify-between items-center">
+                    <div
+                        className='flex flex-wrap'>
+                        <div className="text-xl font-bold"> {item.product_name}</div>
+                        <span className="px-3 py-2 rounded-full bg-slate-700 text-white text-sm mx-2">{item.price}</span>
+                    </div>
+
                 </div>
             </div>)
         }
 
 
     </>
+
+
 }
 
 export default Beverages

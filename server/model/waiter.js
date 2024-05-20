@@ -23,13 +23,25 @@ const waiterSchema = new Schema({
         type: String,
         required: true
     },
+    permanent_address: {
+        type: String,
+        required: true
+    },
     phone: {
         type: Number,
-        default: 0
+        required: true
     },
-    age: {
+    aadhar: {
         type: Number,
-        default: 0
+        required: true
+    },
+    dob: {
+        type: String,
+        required: true
+    },
+    Wsalary: {
+        type: Number,
+        required: true
     },
     userRole: {
         type: String,

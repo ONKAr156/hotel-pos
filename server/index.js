@@ -8,8 +8,13 @@ const waiterRoutes = require('./routes/waiterRoutes.js')
 const app = express()
 const mongoString = process.env.DATABASE_URL;
 
-app.use(express.json());
-app.use(cors());
+const corsOptions = {
+    origin: 'http://localhost:5173', // or use '*' to allow all origins
+    optionsSuccessStatus: 200 // some legacy browsers (IE11, various SmartTVs) choke on 204
+  };
+  
+  app.use(express.json());
+  app.use(cors(corsOptions))
 
 
 app.listen(3000, () => {

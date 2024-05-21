@@ -331,6 +331,41 @@ router.put('/orders/update/:table', async (req, res) => {
 });
 
 
+router.delete('/orders/delete/:table', async (req, res) => {
+    const { table } = req.params;
+    const { itemId } = req.body; // itemId is expected to be in the request body for deletion
+
+    try {
+        // Find the order for the specified table with 'Pending' status and 'Unpaid' paymentStatus
+        const order = await Order.findOne({ table, status: 'Pending', paymentStatus: 'Unpaid' });
+
+        if (!order) {
+            return res.status(404).json({ message: "Order not found." });
+        }
+
+        // Filter out the item to be deleted
+        const removedItemCount = order.items.length;
+        order.items = order.items.filter(item => item.cuisine.toString() !== itemId);
+
+        // If any item was removed
+        if (removedItemCount !== order.items.length) {
+            await order.save();
+            // Check if the order is empty after item removal
+            if (order.items.length === 0) {
+                await order.remove();
+                await Table.updateOne({ id: table }, { $set: { currStatus: "vacant" }});
+                return res.status(200).json({ message: `Order cleared and the table ${table} is now vacant.` });
+            }
+            return res.status(200).json({ message: `Item ${itemId} deleted from order.` });
+        } else {
+            return res.status(404).json({ message: `Item ${itemId} not found in order.` });
+        }
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ message: `Server error: ${error.message}` });
+    }
+});
+
 
 
 module.exports = router

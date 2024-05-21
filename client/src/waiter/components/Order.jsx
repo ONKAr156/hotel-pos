@@ -56,7 +56,7 @@ const Order = () => {
                         </div>
                         <div className='text-center w-1/3'>
                             <button onClick={e => setItemCount(itemCount - 1)} className='bg-slate-400 text-white mx-1 px-1 rounded-sm'><i class="bi bi-dash"></i></button>
-                            <span className=' text-white  mx-1 '>{itemCount}</span>
+                            <span className=' text-white  mx-1 '>{item.quantity}</span>
                             <button onClick={e => setItemCount(itemCount + 1)} className='bg-slate-400 text-white  mx-1 px-1 rounded-sm'><i class="bi bi-plus"></i></button>
                         </div>
                     </div>)

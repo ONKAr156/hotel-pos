@@ -143,7 +143,7 @@ router.get("/get-all-tables", async (req, res) => {
 
 router.get("/get-all-tables/status", async (req, res) => {
     try {
-        const orders = await Order.find({status:"Pending" }) // or { table: tableNumber } if you converted it above
+        const orders = await Order.find({ status: "Pending" }) // or { table: tableNumber } if you converted it above
             .populate('items.cuisine')
 
 
@@ -158,7 +158,7 @@ router.get("/get-all-tables/status", async (req, res) => {
 
 router.post('/orders/add-order/:table', async (req, res) => {
     const { table } = req.params;
-    const { waiterId, itemId } = req.body;
+    const { itemId } = req.body;
 
 
 
@@ -287,6 +287,48 @@ router.get('/orders/by-table/:table', async (req, res) => {
     }
 });
 
+
+
+router.put('/orders/update/:table', async (req, res) => {
+    const { table } = req.params;
+    const { itemId, quantity } = req.body;
+
+
+
+    try {
+        const cuisineItem = await Cuisine.findById(itemId);
+        if (!cuisineItem) {
+            return res.status(404).json({ message: "Cuisine item not found." });
+        }
+
+        let order = await Order.findOne({ table, status: 'Pending', paymentStatus: 'Unpaid' });
+
+        if (order) {
+            order.items.push({
+                cuisine: itemId,
+                quantity: quantity,
+                price: cuisineItem.price
+            });
+
+        }
+        const tableStatus = await Table.findOne({ id: table })
+        tableStatus.currStatus = "occupied"
+        await tableStatus.save()
+
+        await order.save();
+
+        // Now, we populate the 'cuisine' to get the 'product_name' when sending the response
+        const populatedOrder = await Order.populate(order, { path: 'items.cuisine' });
+
+        // You might need to structure the response based on your client's needs
+        // This will include the product_name in the order items
+        return res.status(201).json(populatedOrder);
+
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ message: 'Server error: ' + error.message });
+    }
+});
 
 
 

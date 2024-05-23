@@ -23,7 +23,7 @@ const CurrentOrder = () => {
 
     return <>
         {/* <pre>{JSON.stringify(data, null, 2)}</pre> */}
-        <div className=' flex items-center flex-wrap gap-2 '>
+        <div className=' flex items-center flex-wrap  gap-2 '>
             {data && data.map(order => (
                 <div key={order._id} className=' items-center bg-slate-400 text-slate-900 p-2 rounded-md ' >
                     <div className='flex justify-between items-center gap-2'>
@@ -68,6 +68,10 @@ const CurrentOrder = () => {
                         <p>Total:000/-</p>
                     </div>
 
+                    <div className='text-end'>
+                        <button className='bg-blue-600 text-white p-2 rounded-md'>Print</button>
+
+                    </div>
                 </div>
             ))}
         </div>

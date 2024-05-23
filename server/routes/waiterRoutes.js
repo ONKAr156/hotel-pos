@@ -155,7 +155,6 @@ router.get("/get-all-tables/status", async (req, res) => {
 });
 
 
-
 router.post('/orders/add-order/:table', async (req, res) => {
     const { table } = req.params;
     const { itemId, waiterId } = req.body;

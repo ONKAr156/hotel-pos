@@ -2,26 +2,30 @@ import axios from 'axios'
 import React, { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { useParams } from 'react-router-dom'
-import { useDeleteItemFromOrderMutation, useGetTableOrderQuery } from '../../redux/api/OrderApi'
+import { useDeleteItemFromOrderMutation, useGetTableOrderQuery, useUpdateItemQuantityMutation } from '../../redux/api/OrderApi'
 
 const Order = () => {
     const params = useParams()
     const [itemCount, setItemCount] = useState(1)
     const [refreshData, setRefreshData] = useState(false);
-
+    const [productId, setProductId] = useState()
     const wData = useSelector(state => state.waiterData)
     const name = wData.waiterData.waiterLogin.name
     const { data: orderData } = useGetTableOrderQuery(params.id)
     const [deleteItemFromOrder, { isLoading }] = useDeleteItemFromOrderMutation()
+    const [updateItemQuantity] = useUpdateItemQuantityMutation();
 
     let initialItemCount = 1;
+
+
+
 
     useEffect(() => {
         if (orderData) {
             console.log('Order data updated:', orderData);
         }
 
-    }, [orderData])
+    }, [orderData, itemCount])
     // console.log(orderData);
 
     const handleDelete = async (id) => {
@@ -33,6 +37,13 @@ const Order = () => {
             console.log('Failed to delete item:', error);
         }
     };
+
+    const handleQuantityChange = async (count) => {
+        setItemCount(count);
+        await updateItemQuantity({ table: params.id, itemId: productId, newQuantity: count });
+    };
+
+
 
     return <>
         <div className='flex flex-col justify-start h-full  '>
@@ -64,14 +75,18 @@ const Order = () => {
                 {/* <pre>{JSON.stringify(orderData, null,2)}</pre> */}
                 {
                     orderData && orderData[0] && orderData[0].items.map(item => <div className='flex justify-center items-center my-3 p-1 gap-1 w-full bg-slate-700 hover:bg-slate-800 text-white rounded-md cursor-pointer'>
-                        <div className='w-[50%]'>
+                        <div
+
+                            className='w-[50%]'>
                             <p className=' font-bold text-white'>{item.cuisine.product_name}</p>
 
                         </div>
-                        <div className='text-center mx-2 '>
-                            <button onClick={e => setItemCount(itemCount - 1)} className='bg-slate-400 text-white mx-1 px-1 rounded-sm'><i class="bi bi-dash"></i></button>
+                        <div
+                            onClick={e => setProductId(item._id)}
+                            className='text-center mx-2 '>
+                            <button onClick={e => handleQuantityChange(itemCount - 1)} className='bg-slate-400 text-white mx-1 px-1 rounded-sm'><i class="bi bi-dash"></i></button>
                             <span className=' text-white  mx-1 '>{item.quantity}</span>
-                            <button onClick={e => setItemCount(itemCount + 1)} className='bg-slate-400 text-white  mx-1 px-1 rounded-sm'><i class="bi bi-plus"></i></button>
+                            <button onClick={e => handleQuantityChange(itemCount + 1)} className='bg-slate-400 text-white  mx-1 px-1 rounded-sm'><i class="bi bi-plus"></i></button>
                         </div>
 
 
@@ -128,7 +143,7 @@ const Order = () => {
 
 
 
-  
+
 
         <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
             <div class="modal-dialog">

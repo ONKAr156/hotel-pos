@@ -6,6 +6,7 @@ import AddTables from '../components/AddTables'
 import Customer from '../components/Customer'
 import Inventory from '../components/Inventory'
 import CurrentOrder from '../components/CurrentOrder'
+import CompleteOrders from '../components/CompleteOrders'
 
 const AdminDash = () => {
     const [toggle, setToggle] = useState("Home")
@@ -33,6 +34,9 @@ const AdminDash = () => {
                                 className={` ${toggle === "Order" ? "bg-slate-300 " : ""} p-1 text-lg rounded-md`}
                                 onClick={e => setToggle("Order")}><i class="bi bi-cup-hot"></i> Live-Orders</p>
                             <p
+                                className={` ${toggle === "PastOrder" ? "bg-slate-300 " : ""} p-1 text-lg rounded-md`}
+                                onClick={e => setToggle("PastOrder")}><i class="bi bi-clipboard-check"></i> Past-Order</p>
+                            <p
                                 className={` ${toggle === "Customer" ? "bg-slate-300 " : ""} p-1 text-lg rounded-md`}
                                 onClick={e => setToggle("Customer")}><i class="bi bi-person-walking"></i> Customer</p>
                         </div>
@@ -52,6 +56,7 @@ const AdminDash = () => {
                                         : toggle === 'Customer' ? <Customer />
                                             : toggle === "Inventory" ? <Inventory />
                                                 : toggle === "Order" ? <CurrentOrder />
+                                                : toggle === "PastOrder" ? <CompleteOrders />
                                                     : <Home />
                     }
                 </div>

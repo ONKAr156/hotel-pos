@@ -26,8 +26,17 @@ export const orderApi = createApi({
             }),
             invalidatesTags: ['Order'],
         }),
+
+        updateItemQuantity: builder.mutation({
+            query: ({ table, itemId, newQuantity }) => ({
+                url: `/orders/update-quantity/${table}`,
+                method: 'PATCH',
+                body: { itemId, newQuantity },
+            }),
+            invalidatesTags: ['Order'],
+        }),
     }),
 });
 
 // Destructuring the hooks name should match the endpoints names
-export const { useGetTableOrderQuery, useAddOrderMutation, useDeleteItemFromOrderMutation } = orderApi;
+export const { useGetTableOrderQuery, useAddOrderMutation, useDeleteItemFromOrderMutation, useUpdateItemQuantityMutation } = orderApi;

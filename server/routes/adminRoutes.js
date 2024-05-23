@@ -6,6 +6,7 @@ const Admin = require("../model/Admin");
 const jwt = require("jsonwebtoken");
 const Table = require("../model/Table");
 const Cuisine = require("../model/Cuisine");
+const Order = require("../model/Order");
 
 // Create admin ----------------------------------------------------------
 router.post('/create-admin-details', async (req, res) => {
@@ -218,7 +219,7 @@ router.put('/update-table/:id', async (req, res) => {
         const updatedTable = await Table.findOneAndUpdate(
             { _id: tableId }, // Using MongoDB's default _id field
             { capacity: newCapacity },
-            { new: true,} 
+            { new: true, }
         );
 
         if (!updatedTable) {
@@ -309,5 +310,45 @@ router.delete('/delete-item/:id', async (req, res) => {
     }
 })
 
+
+
+// Order
+// Complete the order  Razer payment and cash payment remaining
+router.post("/order/complete/:id", async (req, res) => {
+    const { id } = req.params
+    try {
+        const findOrder = await Order.findById(id)
+        if (!findOrder) {
+            return res.status(401).json({ message: "Did not found Order" })
+        }
+        const result = await Order.findByIdAndUpdate(
+            { _id: id },
+            { status: "Completed" },
+            { new: true, }
+        )
+        const updateTable = await Table.findByIdAndUpdate(
+            { _id: result._id },
+            { currStatus: "vacant" },
+            { new: true, }
+        )
+        return res.status(200).json({ message: "success", result })
+
+    } catch (error) {
+        return res.status(500).json({ message: "Something went wrong", error: error.message })
+    }
+})
+
+router.get("/order/previous", async (req, res) => {
+    try {
+        const orders = await Order.find({ status: "Completed" }) // or { table: tableNumber } if you converted it above
+            .populate('items.cuisine')
+
+
+        return res.status(200).json(orders);
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ message: 'Server error: ' + error.message });
+    }
+});
 
 module.exports = router

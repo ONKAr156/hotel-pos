@@ -8,7 +8,7 @@ import Inventory from '../components/Inventory'
 import CurrentOrder from '../components/CurrentOrder'
 
 const AdminDash = () => {
-    const [toggle, setToggle] = useState(true)
+    const [toggle, setToggle] = useState("Home")
     return <>
         <div className='min-h-screen p-4 bg-slate-200'>
             <h2 className='text-center text-lg font-bold'>Admin Dashboard</h2>
@@ -18,22 +18,22 @@ const AdminDash = () => {
                     <div className='flex flex-col justify-between p-2 h-full cursor-pointer'>
                         <div className='flex flex-col justify-between  '>
                             <p
-                                className='p-1 text-lg '
+                                className={` ${toggle === "Home" ? "bg-slate-300" : ""} p-1 text-lg rounded-md`}
                                 onClick={e => setToggle("Home")}><i className="bi bi-house"></i> Home</p>
                             <p
-                                className='p-1 text-lg'
+                                className={` ${toggle === "Waiter" ? "bg-slate-300 " : ""} p-1 text-lg rounded-md`}
                                 onClick={e => setToggle("Waiter")}><i className="bi bi-person-add"></i> Waiter</p>
                             <p
-                                className='p-1 text-lg'
+                                className={` ${toggle === "Cuisine" ? "bg-slate-300 " : ""} p-1 text-lg rounded-md`}
                                 onClick={e => setToggle("Cuisine")}><i class="bi bi-patch-plus-fill"></i> Cuisine</p>
                             <p
-                                className='p-1 text-lg'
+                                className={` ${toggle === "Table" ? "bg-slate-300 " : ""} p-1 text-lg rounded-md`}
                                 onClick={e => setToggle("Table")}><i class="bi bi-plus-square"></i> Table</p>
                             <p
-                                className='p-1 text-lg'
-                                onClick={e => setToggle("Order")}><i class="bi bi-cup-hot"></i> Live-Order</p>
+                                className={` ${toggle === "Order" ? "bg-slate-300 " : ""} p-1 text-lg rounded-md`}
+                                onClick={e => setToggle("Order")}><i class="bi bi-cup-hot"></i> Live-Orders</p>
                             <p
-                                className='p-1 text-lg'
+                                className={` ${toggle === "Customer" ? "bg-slate-300 " : ""} p-1 text-lg rounded-md`}
                                 onClick={e => setToggle("Customer")}><i class="bi bi-person-walking"></i> Customer</p>
                         </div>
 

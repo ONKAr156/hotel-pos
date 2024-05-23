@@ -27,37 +27,47 @@ const CurrentOrder = () => {
             {data && data.map(order => (
                 <div key={order._id} className=' items-center bg-slate-400 text-slate-900 p-2 rounded-md ' >
                     <div className='flex justify-between items-center gap-2'>
-                        <p> <strong>Table:</strong> {order.table}</p>
+                        <p> <strong>Table No:</strong> <span className='underline-offset-2'>{order.table}</span></p>
                         <p><strong>Waiter:</strong> John</p>
                     </div>
-                    <div className='flex justify-between items-center gap-2'>
-                        <p><strong>Status:</strong> {order.status}</p>
-                        <p><strong>Payment Status:</strong> {order.paymentStatus}</p>
-                    </div>
-                    <div className='flex justify-between items-center gap-2'>
-                        <p><strong>Order Placed:</strong> </p>
-                        <p>{new Date(order.orderPlacedTime).toLocaleDateString("en-US", {
-                            year: 'numeric',
-                            month: 'long',
-                            day: 'numeric',
-                            hour: '2-digit',
-                            minute: '2-digit'
-                        })}</p>
+                    <hr />
+                    <div className='p-1'>
+                        <div className='flex justify-between items-center gap-2'>
+                            <p><strong>Status:</strong> {order.status}</p>
+                            <p><strong>Payment Status:</strong> {order.paymentStatus}</p>
+                        </div>
+                        <div className='flex justify-between items-center gap-2'>
+                            <p><strong>Order Placed:</strong> </p>
+                            <p>{new Date(order.orderPlacedTime).toLocaleDateString("en-US", {
+                                year: 'numeric',
+                                month: 'long',
+                                day: 'numeric',
+                                hour: '2-digit',
+                                minute: '2-digit'
+                            })}</p>
+                        </div>
                     </div>
 
                     <hr />
-                    <h3>Items:</h3>
-                    <ul>
-                        {order.items.map(item => (
-                            <li key={item._id}>
-                                {item.cuisine ? (
-                                    <span>{item.cuisine.product_name} ({item.cuisine.category}) - {item.quantity} x ₹{item.price}</span>
-                                ) : (
-                                    <span>Unknown Item - {item.quantity} x ₹{item.price}</span>
-                                )}
-                            </li>
-                        ))}
-                    </ul>
+                    <div className='bg-slate-400 text-black my-2  '>
+                        <p className='font-semibold'>Items:</p>
+                        <ul  >
+                            {order.items.map(item => (
+                                <li key={item._id}>
+                                    {item.cuisine ? (
+                                        <span>{item.cuisine.product_name} ({item.cuisine.category}) - {item.quantity} x ₹{item.price}</span>
+                                    ) : (
+                                        <span>Unknown Item - {item.quantity} x ₹{item.price}</span>
+                                    )}
+                                </li>
+                            ))}
+                        </ul>
+                    </div>
+                    <hr />
+                    <div>
+                        <p>Total:000/-</p>
+                    </div>
+
                 </div>
             ))}
         </div>

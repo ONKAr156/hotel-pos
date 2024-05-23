@@ -103,7 +103,7 @@ const EmpTable = () => {
                         <th className="text-left py-3 px-4 uppercase font-semibold text-sm">Email</th>
                         <th className="text-left py-3 px-4 uppercase font-semibold text-sm">Current Address</th>
                         <th className="text-left py-3 px-4 uppercase font-semibold text-sm">Phone</th>
-                        <th className="text-left py-3 px-4 uppercase font-semibold text-sm">Salary</th>
+                        {/* <th className="text-left py-3 px-4 uppercase font-semibold text-sm">Salary</th> */}
                         <th className="text-left py-3 px-4 uppercase font-semibold text-sm">Date of Joining</th>
                         <th className="text-left py-3 px-4 uppercase font-semibold text-sm">Actions</th>
                     </tr>
@@ -115,7 +115,7 @@ const EmpTable = () => {
                             <td className="p-2">{row.email}</td>
                             <td className="py-2 px-8">{row.current_address}</td>
                             <td className="p-2">{row.phone}</td>
-                            <td className="p-2">{row.Wsalary} INR</td>
+                            {/* <td className="p-2">{row.Wsalary} INR</td> */}
                             <td className="py-2 px-4"> {new Date(row.createdAt).toLocaleDateString("en-US", {
                                 year: 'numeric',
                                 month: 'long',

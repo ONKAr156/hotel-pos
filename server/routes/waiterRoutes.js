@@ -158,7 +158,7 @@ router.get("/get-all-tables/status", async (req, res) => {
 
 router.post('/orders/add-order/:table', async (req, res) => {
     const { table } = req.params;
-    const { itemId } = req.body;
+    const { itemId, waiterId } = req.body;
 
 
 
@@ -289,44 +289,47 @@ router.get('/orders/by-table/:table', async (req, res) => {
 
 
 
-router.put('/orders/update/:table', async (req, res) => {
+router.patch('/orders/update-quantity/:table', async (req, res) => {
     const { table } = req.params;
-    const { itemId, quantity } = req.body;
+    const { newQuantity, itemId } = req.body;  // Assuming newQuantity is passed in the request body.
 
-
+    if(newQuantity < 1) {
+        return res.status(400).json({ message: "Quantity must be at least 1." });
+    }
 
     try {
-        const cuisineItem = await Cuisine.findById(itemId);
-        if (!cuisineItem) {
-            return res.status(404).json({ message: "Cuisine item not found." });
-        }
-
+        // Find the order and the item within it
         let order = await Order.findOne({ table, status: 'Pending', paymentStatus: 'Unpaid' });
 
-        if (order) {
-            order.items.push({
-                cuisine: itemId,
-                quantity: quantity,
-                price: cuisineItem.price
-            });
-
+        if (!order) {
+            return res.status(404).json({ message: "Order not found." });
         }
-        const tableStatus = await Table.findOne({ id: table })
-        tableStatus.currStatus = "occupied"
-        await tableStatus.save()
 
+        // Find the item
+        let itemIndex = order.items.findIndex(item => item._id.toString() === itemId);
+
+        if (itemIndex <0) {
+            return res.status(404).json({ message: "Item not found in order." });
+        }
+
+        // Update the quantity of the item
+        order.items[itemIndex].quantity = newQuantity;
+
+        // Save the updated order
         await order.save();
 
-        // Now, we populate the 'cuisine' to get the 'product_name' when sending the response
-        const populatedOrder = await Order.populate(order, { path: 'items.cuisine' });
+        // Optionally, populate the updated item's information if required.
+        const updatedItem = order.items[itemIndex];
+        const populatedItem = await Cuisine.populate(updatedItem, { path: 'cuisine' });
 
-        // You might need to structure the response based on your client's needs
-        // This will include the product_name in the order items
-        return res.status(201).json(populatedOrder);
+        res.status(200).json({
+            message: 'Item quantity updated successfully.',
+            item: populatedItem  // or just use updatedItem if you don't need to populate
+        });
 
     } catch (error) {
         console.error(error);
-        return res.status(500).json({ message: 'Server error: ' + error.message });
+        res.status(500).json({ message: 'Server error: ' + error.message });
     }
 });
 
@@ -352,8 +355,8 @@ router.delete('/orders/delete/:table', async (req, res) => {
             await order.save();
             // Check if the order is empty after item removal
             if (order.items.length === 0) {
-                await order.remove();
-                await Table.updateOne({ id: table }, { $set: { currStatus: "vacant" }});
+                await order.deleteOne();
+                await Table.updateOne({ id: table }, { $set: { currStatus: "vacant" } });
                 return res.status(200).json({ message: `Order cleared and the table ${table} is now vacant.` });
             }
             return res.status(200).json({ message: `Item ${itemId} deleted from order.` });

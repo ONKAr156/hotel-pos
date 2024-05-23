@@ -7,14 +7,14 @@ import waiterSlice from "./slice/waiterSlice";
 
 const reduxStore = configureStore({
     reducer: {
-        // [loginApi.reducerPath]: loginApi.reducer,
-        // [waiterApi.reducerPath]: waiterApi.reducer,
+        [loginApi.reducerPath]: loginApi.reducer,
+        [waiterApi.reducerPath]: waiterApi.reducer,
         [orderApi.reducerPath]: orderApi.reducer,
         waiterData: waiterSlice
     },
     middleware: def => [...def(),
-    // loginApi.middleware,
-    // waiterApi.middleware,
+    loginApi.middleware,
+    waiterApi.middleware,
     orderApi.middleware,]
 })
 

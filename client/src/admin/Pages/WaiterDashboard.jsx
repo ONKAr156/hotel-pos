@@ -134,7 +134,7 @@ const WaiterDashboard = () => {
                             </div>
                             <div className="mb-4">
                                 <span className="block uppercase tracking-wide  text-xs font-bold mb-2">Salary</span>
-                                <span className="block text-gray-900">{waiterInfo.Wsalary}/-</span>
+                                <span className="block font-medium p-2 border-2 border-dashed text-gray-900">{waiterInfo.Wsalary}/-</span>
                             </div>
                         </div>
                         <div className="mb-4">

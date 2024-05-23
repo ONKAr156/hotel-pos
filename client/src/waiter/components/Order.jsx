@@ -15,7 +15,7 @@ const Order = () => {
     const [deleteItemFromOrder, { isLoading }] = useDeleteItemFromOrderMutation()
 
     let initialItemCount = 1;
-    
+
     useEffect(() => {
         if (orderData) {
             console.log('Order data updated:', orderData);
@@ -26,13 +26,13 @@ const Order = () => {
 
     const handleDelete = async (id) => {
         try {
-          // Invoke the mutation
-          const result = await deleteItemFromOrder({ tableId:params.id, itemId:id }).unwrap();
-          console.log('Deleted item from order:', result);
+            // Invoke the mutation
+            const result = await deleteItemFromOrder({ tableId: params.id, itemId: id }).unwrap();
+            console.log('Deleted item from order:', result);
         } catch (error) {
-          console.log('Failed to delete item:', error);
+            console.log('Failed to delete item:', error);
         }
-      };
+    };
 
     return <>
         <div className='flex flex-col justify-start h-full  '>
@@ -77,7 +77,7 @@ const Order = () => {
 
                         <div
                             // onClick={e => handleDelete(item.cuisine._id)}
-                            onClick={e=>handleDelete(item.cuisine._id)} disabled={isLoading}
+                            onClick={e => handleDelete(item.cuisine._id)} disabled={isLoading}
                             className='mx-2'>
                             <button
 
@@ -101,19 +101,57 @@ const Order = () => {
                 </div> */}
             </div>
 
-
+            {/* 
             <div>
 
                 <div className='border-t-2 mt-2 flex justify-center items-center '>
                     <p className='font-medium'>Payment :</p>
                     <div className='text-end flex mt-2'>
-                        <button className='bg-gray-800 px-3 py-1 text-white mx-2'>Cash</button>
+                        <button data-bs-toggle="modal" data-bs-target="#exampleModal" className='bg-gray-800 px-3 py-1 text-white mx-2'>Cash</button>
                         <button className='bg-gray-800 px-3 py-1 text-white mx-2'>UPI</button>
+                    </div>
+                </div>
+            </div> */}
+
+
+            <div>
+
+                <div className='border-t-2 mt-2 flex justify-center items-center '>
+                    <div className='text-end flex mt-2'>
+                        <button data-bs-toggle="modal" data-bs-target="#exampleModal" className='bg-gray-800 px-3 py-1 text-white mx-2'>Complete</button>
                     </div>
                 </div>
             </div>
         </div>
+
+
+
+
+
+  
+
+        <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        ...
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-primary">Save changes</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
     </>
 }
+
+
+
 
 export default Order

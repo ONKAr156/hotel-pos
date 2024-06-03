@@ -29,8 +29,8 @@ export const orderApi = createApi({
 
         updateItemQuantity: builder.mutation({
             query: ({ table, itemId, newQuantity }) => ({
-                url: `/orders/update-quantity/${table}`,
-                method: 'PATCH',
+                url: `orders/update-quantity/${table}`,
+                method: 'PUT',
                 body: { itemId, newQuantity },
             }),
             invalidatesTags: ['Order'],

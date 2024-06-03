@@ -1,25 +1,44 @@
 import axios from 'axios'
 import React, { useEffect, useState } from 'react'
+import { toast } from 'react-toastify'
 
 const CurrentOrder = () => {
     const [data, setData] = useState()
+    const [loading, setLoading] = useState(false)
     useEffect(() => {
         const handelFetchTableData = async () => {
             try {
                 const result = await axios.get("http://localhost:3000/api/waiter/get-all-tables/status")
-                if (!result) {
-                    return <div> <p>Loading......</p></div>
-                } else {
-                    setData(result.data)
-                }
+                setData(result.data)
             } catch (error) {
                 console.log(error);
             }
         }
         handelFetchTableData()
-    }, [])
+    }, [loading])
 
-    console.log(data && data[0]);
+
+    const handelCompleteOrder = async (id) => {
+        setLoading(true)
+        try {
+            const result = await axios.post(`http://localhost:3000/api/admin/order/complete/${id}`)
+            if (result.status === 200) {
+                toast.success("Order Completed")
+            } else {
+                console.log(result.response.data)
+            }
+        } catch (error) {
+            console.log(error);
+        }
+        finally {
+            setLoading(false)
+        }
+    }
+
+    if (loading) {
+
+        return <div className='flex justify-center items-center h-full'> <p>Loading......</p></div>
+    }
 
     return <>
         {/* <pre>{JSON.stringify(data, null, 2)}</pre> */}
@@ -65,11 +84,25 @@ const CurrentOrder = () => {
                     </div>
                     <hr />
                     <div>
-                        <p>Total:000/-</p>
+                        <p className='font-semibold'>Total:
+                            ₹{order.items.reduce((total, item) => {
+                                return total + (item.price * item.quantity);
+                            }, 0).toFixed(2)}
+                        </p>
+
+                        {/* Grand Total calculation including GST */}
+                        <p className='font-semibold'>Grand Total (including GST):
+                            ₹{order.items.reduce((total, item) => {
+                                const itemTotal = item.price * item.quantity;
+                                return total + itemTotal;
+                            }, 0) * (1 + 18 / 100)} 
+                        </p>
                     </div>
 
                     <div className='text-end'>
-                        <button className='bg-blue-600 text-white p-2 rounded-md'>Print</button>
+                        <button
+                            onClick={e => handelCompleteOrder(order._id)}
+                            className='bg-blue-600 text-white p-2 rounded-md'>Print</button>
 
                     </div>
                 </div>

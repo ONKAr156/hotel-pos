@@ -180,6 +180,7 @@ const AddCuisines = () => {
                                     <tr>
                                         <th scope="col" class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase">Sr.no</th>
                                         <th scope="col" class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase">Name</th>
+                                        <th scope="col" class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase">Status</th>
                                         <th scope="col" class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase">Price (₹)</th>
                                         <th scope="col" class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase">Action</th>
                                     </tr>
@@ -189,6 +190,13 @@ const AddCuisines = () => {
                                         cuisineTable && cuisineTable.product.map((item, a) => <tr className='text-center' key={item._id}>
                                             <td className=''>{a + 1}</td>
                                             <td className='font-semibold'>{item.product_name}</td>
+                                            <td className='font-semibold text-center'>
+
+                                                <div class="form-check form-switch">
+                                                    <input class="form-check-input" type="checkbox" id="id" />
+                                                </div>
+
+                                            </td>
                                             <td className='font-medium'>{item.price}/-</td>
                                             <td className='pt-2'>
                                                 <button

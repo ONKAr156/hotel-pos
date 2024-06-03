@@ -60,10 +60,10 @@ const CompleteOrders = () => {
             <table className="min-w-full bg-white border border-gray-300">
                 <thead>
                     <tr>
-                        <th className="py-2 px-4 border-b">Order ID</th>
                         <th className="py-2 px-4 border-b">Table</th>
-                        <th className="py-2 px-4 border-b">Waiter</th>
-                        <th className="py-2 px-4 border-b">Items</th>
+                        <th className="py-2 px-4 border-b">Order ID</th>
+                        <th className="py-2 px-4 border-b">items</th>
+                        <th className="py-2 px-4 border-b">Status</th>
                         <th className="py-2 px-4 border-b">Payment type</th>
                         <th className="py-2 px-4 border-b">Order Placed Time</th>
                     </tr>
@@ -72,7 +72,7 @@ const CompleteOrders = () => {
                     {data && data.map(order => (
                         <tr key={order._id}>
                             <td className="py-2 px-4 border-b text-center">{order.table}</td>
-                            <td className="py-2 px-4 border-b text-center">{order.waiter}</td>
+                            <td className="py-2 px-4 border-b text-center">{order._id}</td>
                             <td className="py-2 px-4 border-b">
                                 {order.items.map(item => (
                                     <div key={item._id} className="mb-2">

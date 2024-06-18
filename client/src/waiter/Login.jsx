@@ -33,7 +33,7 @@ const Login = () => {
 
     return <>
         <div className="flex min-h-screen items-center justify-center bg-gradient-to-tr from-gray-900 to-indigo-900 py-12 px-4 sm:px-6 lg:px-8 dark:bg-gray-900">
-            <div className="w-full max-w-md space-y-8">
+            <div className="w-full max-w-md space-y-8 border-2 border-slate-500 p-4  ">
                 <div>
                     <h2 className="mt-6 text-center text-3xl font-bold tracking-tight text-gray-900 dark:text-gray-50">
                         Waiter Login
@@ -89,7 +89,6 @@ const Login = () => {
                                     <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z" />
                                     <circle cx="12" cy="12" r="3" />
                                 </svg>
-                                <span className="sr-only">Toggle password visibility</span>
                             </button>
                         </div>
                     </div>
@@ -102,14 +101,7 @@ const Login = () => {
                             Login
                         </button>
                     </div>
-                    <div>
-                        <button
-                            className="flex w-full justify-center rounded-md border border-transparent bg-gray-600 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 dark:bg-gray-500 dark:hover:bg-gray-600 dark:focus:ring-gray-600"
-                            type="button"
-                        >
-                            Default Button
-                        </button>
-                    </div>
+                    
                 </form>
                 <div className=' text-end text-white'>
                     {loginError}

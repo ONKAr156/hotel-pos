@@ -52,7 +52,7 @@ const MainCourse = () => {
         {
             getData && getData.map(item => <div
                 onClick={e => handleAddOrder(item._id)}
-                className="m-2   bg-gray-800 text-white  rounded-lg shadow-md p-6" key={item.dish}>
+                className="m-2   bg-gray-800 text-white  rounded-lg shadow-md p-2 md:p-6" key={item.dish}>
                 <div className="flex flex-col flex-wrap gap-2 justify-between items-center">
                     <div
                         className='flex flex-wrap'>

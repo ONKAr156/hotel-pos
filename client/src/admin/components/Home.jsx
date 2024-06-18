@@ -4,7 +4,7 @@ import { useEffect } from 'react';
 import EmpTable from './EmpTable';
 
 const Home = () => {
-   
+
 
 
     return <>
@@ -33,27 +33,27 @@ const Home = () => {
                         </div>
                     </div>
 
-                    <div className='bg-slate-50 shadow-lg p-10 rounded-md w-1/4'>
+                    <div className='bg-slate-50 shadow-lg p-3 md:p-10 rounded-md w-1/4'>
                         <p>
-                            <span className='font-medium text-xl'> Total Revenue :</span> 0000/-
+                            <span className='font-semibold text-lg md:text-lg'> Total Revenue :</span> <span className='font-bold text-xl'>15,62,045/-</span>
                         </p>
                     </div>
                 </div>
             </div>
 
-            <div className='col-span-4 mx-2 text-slate-900 '>
-                <div className='my-2 bg-slate-300 p-5 font-semibold text-lg rounded-lg'>Total LMS : 25000 INR</div>
-                <div className='my-2 bg-slate-400 p-5 font-semibold text-lg rounded-lg'>Total Employee : 10</div>
-                <div className='my-2 bg-slate-500 p-5 font-semibold text-lg rounded-lg'>Total Tables : 8</div>
+            <div className='col-span-12 md:col-span-4 flex gap-3 md:flex-col mx-2 text-slate-900 '>
+                <div className='my-2 bg-slate-300  md:p-10 font-semibold text-lg rounded-lg'>Total LMS : 25000 INR</div>
+                <div className='my-2 bg-slate-400  md:p-10 font-semibold text-lg rounded-lg'>Total Employee : 10</div>
+                <div className='my-2 bg-slate-500  md:p-10 font-semibold text-lg rounded-lg'>Total Tables : 8</div>
 
             </div>
 
-            <div className=' my-2 col-span-8 p-2 flex justify-center items-center shadow-xl rounded-md'>
+            <div className=' my-2 col-span-12 md:col-span-8 p-2 flex justify-center items-center shadow-xl rounded-md'>
                 <Chart />
 
             </div>
 
-            <div className='col-span-12 '>
+            <div className='col-span-12 w-full '>
                 <EmpTable />
 
             </div>

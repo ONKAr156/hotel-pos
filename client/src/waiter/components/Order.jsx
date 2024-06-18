@@ -2,7 +2,7 @@ import axios from 'axios'
 import React, { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { useParams } from 'react-router-dom'
-import { useDeleteItemFromOrderMutation, useGetTableOrderQuery, useUpdateItemQuantityMutation } from '../../redux/api/OrderApi'
+import { useCompletOrderMutation, useDeleteItemFromOrderMutation, useGetTableOrderQuery, useUpdateItemQuantityMutation } from '../../redux/api/OrderApi'
 import { toast } from "react-toastify"
 
 const Order = () => {
@@ -18,10 +18,7 @@ const Order = () => {
     const { data: orderData } = useGetTableOrderQuery(params.id)
     const [deleteItemFromOrder, { isLoading }] = useDeleteItemFromOrderMutation()
     const [updateItemQuantity] = useUpdateItemQuantityMutation();
-
-
-
-
+    const [completOrder] = useCompletOrderMutation()
 
     useEffect(() => {
         if (orderData) {
@@ -59,14 +56,18 @@ const Order = () => {
     const handelCompleteOrder = async (id) => {
         setLoading(true)
         try {
-            const result = await axios.post(`http://localhost:3000/api/waiter/order/complete/${id}`)
-            if (result.status === 200) {
-                toast.success("Order Completed")
-            } else {
-                console.log(result.response.data)
+            const order = await completOrder(id).unwrap();
+            if (order.status === 201) {
+                console.log("Order Completed successfully:", order.data);
+                toast.success("Order completed sccessfully")
             }
         } catch (error) {
-            console.log(error);
+            if (error.response) {
+                console.log("Error data from server:", error.response.data);
+                console.log("Error status from server:", error.response.status);
+            } else {
+                console.log("Error message:", error.message);
+            }
         }
         finally {
             setLoading(false)
@@ -87,7 +88,7 @@ const Order = () => {
                 <div className='flex justify-between items-center opacity-65'>
                     <p> {new Date().toLocaleDateString()}
                     </p>
-                    <p>{new Date().toLocaleTimeString()}</p>
+
                 </div>
                 <h3 className="text-xl font-bold opacity-65">Order Details</h3>
                 <hr />
@@ -141,14 +142,14 @@ const Order = () => {
                     )
                 }
             </div>
-            <div>
+            {/* <div>
 
                 <div className='border-t-2 mt-2 flex justify-center items-center '>
                     <div className='text-end flex mt-2'>
                         <button data-bs-toggle="modal" data-bs-target="#exampleModal" className='bg-gray-800 px-3 py-1 text-white mx-2'>Complete</button>
                     </div>
                 </div>
-            </div>
+            </div> */}
         </div>
 
 
@@ -157,7 +158,7 @@ const Order = () => {
 
 
 
-        <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        {/* <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -176,7 +177,7 @@ const Order = () => {
                     </div>
                 </div>
             </div>
-        </div>
+        </div> */}
 
     </>
 }

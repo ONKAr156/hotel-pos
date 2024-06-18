@@ -36,16 +36,11 @@ const orderSchema = new mongoose.Schema({
     required: true
   },
   paymentDetails: {
-    amount: {
-      type: Number,
-      // required: true
-    },
     method: {
       type: String,
-      enum: ['Cash', 'Card', 'Online'],
-      // required: true
+      enum: ['Cash','UPI'],
     },
-    transactionId: String // Required only for non-cash payments
+    transactionId: String
   },
   orderPlacedTime: {
     type: Date,

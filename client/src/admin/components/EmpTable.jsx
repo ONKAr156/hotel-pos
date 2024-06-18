@@ -73,14 +73,14 @@ const EmpTable = () => {
     const fixCost = data.reduce((a, b) => (a + b.Wsalary), 0)
     console.log(fixCost);
     return <>
-        <div className="min-w-full bg-white  rounded-md my-6">
+        <div className="overflow-auto bg-white  rounded-md my-6">
             <div className='flex justify-between my-2'>
                 <div>
                     <p className='p-1 font-medium border-2 border-dashed '>Total Monthly Salaries: {fixCost}</p>
 
                 </div>
 
-                <div>
+                <div className='overflow-hidden'>
                     <select className='mx-2 border p-1' onChange={handleSortChange} value={sortOrder}>
                         <option value="asc">Sort Salary Low-High</option>
                         <option value="desc">Sort Salary High-Low</option>
@@ -96,7 +96,7 @@ const EmpTable = () => {
                 </div>
             </div>
 
-            <table className='w-full h-full mt-4'>
+            <table className='  w-full h-full mt-4'>
                 <thead className="bg-gray-200">
                     <tr>
                         <th className="text-left py-3 px-4 uppercase font-semibold text-sm">Name</th>

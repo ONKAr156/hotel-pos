@@ -1,10 +1,11 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { loginApi } from "../api/loginApi";
+import { orderApi } from "../api/OrderApi";
 
 
 const waiterSlice = createSlice({
     name: "waiterSlice",
-    initialState: { },
+    initialState: {},
     reducers: {
         updateWaiterData: (state, { payload }) => {
             state.waiterData = payload
@@ -15,6 +16,12 @@ const waiterSlice = createSlice({
             loginApi.endpoints.waiterLogin.matchFulfilled,
             (state, { payload }) => {
                 state.waiterData = payload;
+            }
+        );
+        builder.addMatcher(
+            orderApi.endpoints.completOrder.matchFulfilled,
+            (state, { payload }) => {
+                state.waiterData = [];
             }
         );
     },

@@ -5,13 +5,14 @@ import { toast } from 'react-toastify'
 const CurrentOrder = () => {
     const [data, setData] = useState()
     const [loading, setLoading] = useState(false)
+    const [error, setError] = useState('')
     useEffect(() => {
         const handelFetchTableData = async () => {
             try {
                 const result = await axios.get("http://localhost:3000/api/waiter/get-all-tables/status")
                 setData(result.data)
             } catch (error) {
-                console.log(error);
+                setError(error.response.data);
             }
         }
         handelFetchTableData()
@@ -39,6 +40,11 @@ const CurrentOrder = () => {
 
         return <div className='flex justify-center items-center h-full'> <p>Loading......</p></div>
     }
+
+    if (error) {
+        return <div className='flex justify-center items-center h-full font-medium bg-slate-300'>{error.message}</div>
+    }
+
 
     return <>
         {/* <pre>{JSON.stringify(data, null, 2)}</pre> */}
@@ -84,7 +90,7 @@ const CurrentOrder = () => {
                     </div>
                     <hr />
                     <div>
-                        <p className='font-semibold'>Total:
+                        <p className='font-semibold'>Subtotal:
                             ₹{order.items.reduce((total, item) => {
                                 return total + (item.price * item.quantity);
                             }, 0).toFixed(2)}
@@ -95,15 +101,20 @@ const CurrentOrder = () => {
                             ₹{order.items.reduce((total, item) => {
                                 const itemTotal = item.price * item.quantity;
                                 return total + itemTotal;
-                            }, 0) * (1 + 18 / 100)} 
+                            }, 0) * (1 + 18 / 100)}
                         </p>
                     </div>
+                    <div className='flex justify-between my-2 border-t-2 border-spacing-2 border-slate-500 border-opacity-50'>
+                        <p>Receive payment via :-</p>
+                        <div className='my-1'>
+                            <button
+                                onClick={e => handelCompleteOrder(order._id)}
+                                className='bg-green-600 text-slate-100 px-2 py-1 mx-2'>Cash</button>
+                            <button
+                                onClick={e => handelCompleteOrder(order._id)}
+                                className='bg-blue-600 text-slate-100 px-2 py-1 '>UPI</button>
 
-                    <div className='text-end'>
-                        <button
-                            onClick={e => handelCompleteOrder(order._id)}
-                            className='bg-blue-600 text-white p-2 rounded-md'>Print</button>
-
+                        </div>
                     </div>
                 </div>
             ))}

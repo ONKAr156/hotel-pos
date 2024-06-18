@@ -35,8 +35,19 @@ export const orderApi = createApi({
             }),
             invalidatesTags: ['Order'],
         }),
+        completOrder: builder.mutation({
+            query: (id) => ({
+                url: `/order/complete/${id}`,
+                method: 'POST',
+            }),
+            invalidatesTags: ['Order'],
+        }),
     }),
 });
 
-// Destructuring the hooks name should match the endpoints names
-export const { useGetTableOrderQuery, useAddOrderMutation, useDeleteItemFromOrderMutation, useUpdateItemQuantityMutation } = orderApi;
+export const {
+    useGetTableOrderQuery,
+    useAddOrderMutation,
+    useDeleteItemFromOrderMutation,
+    useUpdateItemQuantityMutation,
+    useCompletOrderMutation } = orderApi;

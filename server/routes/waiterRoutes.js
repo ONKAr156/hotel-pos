@@ -6,6 +6,7 @@ const jwt = require("jsonwebtoken");
 const Cuisine = require("../model/Cuisine");
 const Table = require("../model/Table");
 const Order = require("../model/Order");
+const { log10 } = require("chart.js/helpers");
 
 // Login ------------------------------------------------------------
 router.post("/login", async (req, res) => {
@@ -140,9 +141,11 @@ router.get("/get-all-tables", async (req, res) => {
 
 router.get("/get-all-tables/status", async (req, res) => {
     try {
-        const orders = await Order.find({ status: "Pending" }) // or { table: tableNumber } if you converted it above
+        const orders = await Order.find({ status: "Pending" })
             .populate('items.cuisine')
-
+        if (orders.length === 0) {
+            return res.status(401).json({ message: "No live orders present" })
+        }
 
         return res.status(200).json(orders);
     } catch (error) {
@@ -155,12 +158,8 @@ router.get('/orders/by-table/:table', async (req, res) => {
     const { table } = req.params;
 
     try {
-        // Convert table to the appropriate type if it's not a string
-        // For example, if it's a number: const tableNumber = parseInt(table);
-
-        const orders = await Order.find({ table: table }) // or { table: tableNumber } if you converted it above
+        const orders = await Order.find({ table: table, status: "Pending" })
             .populate('items.cuisine')
-
 
         return res.status(200).json(orders);
     } catch (error) {
@@ -174,8 +173,6 @@ router.post('/orders/add-order/:table', async (req, res) => {
     const { table } = req.params;
     const { itemId, waiterId } = req.body;
 
-
-
     try {
         const cuisineItem = await Cuisine.findById(itemId);
         if (!cuisineItem) {
@@ -186,16 +183,15 @@ router.post('/orders/add-order/:table', async (req, res) => {
 
         if (order) {
             order.items.push({
-                cuisine: itemId, // Keeping reference to the cuisine
+                cuisine: itemId,
                 price: cuisineItem.price
             });
         } else {
-            // No existing order, create a new one
             order = new Order({
                 table: table,
                 waiter: waiterId,
                 items: [{
-                    cuisine: itemId, // Keeping reference to the cuisine
+                    cuisine: itemId,
                     price: cuisineItem.price
                 }],
                 status: 'Pending',
@@ -208,11 +204,8 @@ router.post('/orders/add-order/:table', async (req, res) => {
 
         await order.save();
 
-        // Now, we populate the 'cuisine' to get the 'product_name' when sending the response
         const populatedOrder = await Order.populate(order, { path: 'items.cuisine' });
 
-        // You might need to structure the response based on your client's needs
-        // This will include the product_name in the order items
         return res.status(201).json(populatedOrder);
 
     } catch (error) {
@@ -304,28 +297,45 @@ router.delete('/orders/delete/:table', async (req, res) => {
 
 // complete order
 router.post("/order/complete/:id", async (req, res) => {
-    const { id } = req.params
+    const { id } = req.params;
+
     try {
-        const findOrder = await Order.findById(id)
+        const findOrder = await Order.findById(id);
         if (!findOrder) {
-            return res.status(401).json({ message: "Did not found Order" })
+            return res.status(401).json({ message: "Did not find Order" });
         }
+
         const result = await Order.findByIdAndUpdate(
-            { _id: id },
-            { status: "Completed" },
-            { new: true, }
-        )
-        const updateTable = await Table.findByIdAndUpdate(
-            { _id: result._id },
+            id,
+            {
+                status: "Completed",
+                paymentStatus: "Paid",
+                paymentDetails: "Cash"
+            },
+            { new: true }
+        );
+
+        const tableId = findOrder.table;
+
+        const updateTable = await Table.findOneAndUpdate(
+            { id: tableId },
             { currStatus: "vacant" },
-            { new: true, }
-        )
-        return res.status(200).json({ message: "success", result })
+            { new: true }
+        );
+
+        if (!updateTable) {
+            return res.status(401).json({ message: "Table not found" });
+        }
+
+        console.log(result);
+        return res.status(200).json({ message: "success", result, updateTable });
 
     } catch (error) {
-        return res.status(500).json({ message: "Something went wrong", error: error.message })
+        return res.status(500).json({ message: "Something went wrong", error: error.message });
     }
-})
+});
+
+
 
 
 

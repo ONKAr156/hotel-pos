@@ -54,9 +54,8 @@ const Starter = ({ table }) => {
         {
             getData && getData.map(item => <div
                 onClick={e => handleAddOrder(item._id)}
-                className="m-2   bg-gray-800 cursor-pointer text-white  rounded-lg shadow-md p-6" key={item.dish}>
-                <div className="flex flex-col flex-wrap gap-2 justify-between items-center ">
-
+                className="m-2   bg-gray-800 text-white  rounded-lg shadow-md p-2 md:p-6" key={item.dish}>
+                <div className="flex flex-col flex-wrap gap-2 justify-between items-center">
                     <div
                         className='flex flex-wrap'>
                         <div className="text-xl font-bold"> {item.product_name}</div>
@@ -66,7 +65,6 @@ const Starter = ({ table }) => {
                 </div>
             </div>)
         }
-
 
     </>
 }

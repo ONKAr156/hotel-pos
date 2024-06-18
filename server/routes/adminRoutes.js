@@ -7,6 +7,7 @@ const jwt = require("jsonwebtoken");
 const Table = require("../model/Table");
 const Cuisine = require("../model/Cuisine");
 const Order = require("../model/Order");
+const { validateAdmin } = require("../middelweare/userRole");
 
 // Create admin ----------------------------------------------------------
 router.post('/create-admin-details', async (req, res) => {
@@ -25,7 +26,6 @@ router.post("/login", async (req, res) => {
 
     try {
         const adminLogin = await Admin.findOne({ email });
-
         if (!adminLogin) {
             return res.status(400).json({ message: 'Email is incorrect' });
         }
@@ -42,7 +42,7 @@ router.post("/login", async (req, res) => {
 
         res.cookie("token", token, {
             httpOnly: true,
-            secure: true,
+            secure: false, // Set to true if using HTTPS
             sameSite: 'Strict',
             maxAge: 60 * 60 * 1000 // 1hr
         });
@@ -51,25 +51,26 @@ router.post("/login", async (req, res) => {
             message: 'Login successful',
             adminLogin: {
                 _id: adminLogin._id,
-                name: adminLogin.name,
+                name: adminLogin.firstName, // Assuming firstName as name
                 email: adminLogin.email,
+                role: adminLogin.userRole,
             },
             token
         });
 
     } catch (error) {
         console.error("Error during login:", error);
-        return res.status(500).json({ message: "Internal server error" });
+        return res.status(500).json({ message: "Internal server error", error: error.message });
     }
 });
 
 // Admin Logout -------------------------------------------------------------
 router.post('/logout', (req, res) => {
-    //  verify the token before logout
+    // Verify the token before logout
     const token = req.cookies.token;
+    console.log("Logout token:", token); // Add logging
     if (token) {
-        // Clearing the JWT cookie
-        res.clearCookie('token');
+        res.clearCookie('token', { httpOnly: true, secure: true, sameSite: 'Strict' });
         return res.status(200).json({ message: 'Logout successful' });
     } else {
         return res.status(400).json({ message: 'No active session' });
@@ -82,7 +83,7 @@ router.post('/logout', (req, res) => {
 // Waiters
 
 // Fetch all waiters  --------------------------------------------------------
-router.get('/fetch-waiter', async (req, res) => {
+router.get('/fetch-waiter',  async (req, res) => {
     try {
         // Fetch all waiter from the MongoDB collection
         const waiter = await Waiter.find();
@@ -188,24 +189,34 @@ router.get("/get-all-tables", async (req, res) => {
 // add New Table
 router.post("/add-new-Table", async (req, res) => {
     try {
-        // First, find the table with the highest `id`
-        const lastTable = await Table.findOne().sort('-id'); // Sort in descending order by `id`
+        // Find the table with the highest `id`
+        const lastTable = await Table.findOne().sort({ id: -1 }); // Sort in descending order by `id`
 
-        // If a table is found, increment the `id`. Otherwise, start from 1.
-        const newId = lastTable ? lastTable.id + 1 : 1;
+        // Increment the `id` if a table is found, otherwise start from 1
+        let newId;
+        if (lastTable) {
+            const lastIdNumber = parseInt(lastTable.id, 10); // Parse last `id` to integer
+            if (isNaN(lastIdNumber)) {
+                return res.status(500).json({ message: "Failed to parse the last table ID" });
+            }
+            newId = (lastIdNumber + 1).toString(); // Increment and convert back to string
+        } else {
+            newId = '1'; // Start from '1' if no table exists
+        }
 
-        // Create a new table with the new `id`
+        // Create a new table with the incremented `id`
         const newTable = new Table({
             id: newId,
             capacity: req.body.capacity,
+            // Add any other required fields here
         });
 
         await newTable.save();
 
         // Respond with the created object
-        res.status(201).json(newTable);
+        return res.status(201).json(newTable);
     } catch (error) {
-        res.status(500).json({ message: "Internal server error", error: error.message });
+        return res.status(500).json({ message: "Internal server error", error: error.message });
     }
 });
 
@@ -313,38 +324,121 @@ router.delete('/delete-item/:id', async (req, res) => {
 
 
 // Order
-// Complete the order  Razer payment and cash payment remaining
 router.post("/order/complete/:id", async (req, res) => {
-    const { id } = req.params
+    const { id } = req.params;
+
     try {
-        const findOrder = await Order.findById(id)
+        const findOrder = await Order.findById(id);
         if (!findOrder) {
-            return res.status(401).json({ message: "Did not found Order" })
+            return res.status(401).json({ message: "Did not find Order" });
         }
+
         const result = await Order.findByIdAndUpdate(
-            { _id: id },
-            { status: "Completed" },
-            { new: true, }
-        )
-        const updateTable = await Table.findByIdAndUpdate(
-            { _id: result._id },
+            id,
+            {
+                status: "Completed",
+                paymentStatus: "Paid",
+                paymentDetails: "Cash"
+            },
+            { new: true }
+        );
+
+        const tableId = findOrder.table;
+
+        const updateTable = await Table.findOneAndUpdate(
+            { id: tableId },
             { currStatus: "vacant" },
-            { new: true, }
-        )
-        return res.status(200).json({ message: "success", result })
+            { new: true }
+        );
+
+        if (!updateTable) {
+            return res.status(401).json({ message: "Table not found" });
+        }
+
+        console.log(result);
+        return res.status(200).json({ message: "success", result, updateTable });
 
     } catch (error) {
-        return res.status(500).json({ message: "Something went wrong", error: error.message })
+        return res.status(500).json({ message: "Something went wrong", error: error.message });
     }
-})
+});
 
 router.get("/order/previous", async (req, res) => {
     try {
-        const orders = await Order.find({ status: "Completed" }) // or { table: tableNumber } if you converted it above
+        const { page = 1, dateFilter } = req.query;
+
+        const pageNumber = parseInt(page, 10);
+        const limitNumber = 5; // Fixed limit to 5
+
+        const query = { status: "Completed" };
+
+        if (dateFilter) {
+            const today = new Date();
+            let filterDate;
+            let startDate;
+            let endDate = new Date(today.setHours(23, 59, 59, 999)); // End of today
+
+            switch (dateFilter) {
+                case 'today':
+                    filterDate = new Date();
+                    startDate = new Date(filterDate.setHours(0, 0, 0, 0));
+                    break;
+                case 'yesterday':
+                    filterDate = new Date();
+                    startDate = new Date(filterDate.setDate(filterDate.getDate() - 1));
+                    startDate.setHours(0, 0, 0, 0);
+                    endDate = new Date(startDate);
+                    endDate.setHours(23, 59, 59, 999);
+                    break;
+                case '7days':
+                    startDate = new Date();
+                    startDate.setDate(startDate.getDate() - 7);
+                    startDate.setHours(0, 0, 0, 0);
+                    break;
+                case '15days':
+                    startDate = new Date();
+                    startDate.setDate(startDate.getDate() - 15);
+                    startDate.setHours(0, 0, 0, 0);
+                    break;
+                case '30days':
+                    startDate = new Date();
+                    startDate.setDate(startDate.getDate() - 30);
+                    startDate.setHours(0, 0, 0, 0);
+                    break;
+                case '60days':
+                    startDate = new Date();
+                    startDate.setDate(startDate.getDate() - 60);
+                    startDate.setHours(0, 0, 0, 0);
+                    break;
+                case '90days':
+                    startDate = new Date();
+                    startDate.setDate(startDate.getDate() - 90);
+                    startDate.setHours(0, 0, 0, 0);
+                    break;
+                default:
+                    return res.status(400).json({ message: 'Invalid date filter' });
+            }
+
+            query.orderPlacedTime = {
+                $gte: startDate,
+                $lt: endDate,
+            };
+        }
+
+        const orders = await Order.find(query)
             .populate('items.cuisine')
+            .sort({ _id: -1 }) // Sorting by _id in descending order
+            .limit(limitNumber)
+            .skip((pageNumber - 1) * limitNumber);
 
+        const totalOrders = await Order.countDocuments(query);
 
-        return res.status(200).json(orders);
+        return res.status(200).json({
+            currentPage: pageNumber,
+            totalPages: Math.ceil(totalOrders / limitNumber),
+            totalOrders: totalOrders,
+            orders: orders
+        });
     } catch (error) {
         console.error(error);
         return res.status(500).json({ message: 'Server error: ' + error.message });

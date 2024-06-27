@@ -6,7 +6,6 @@ const jwt = require("jsonwebtoken");
 const Cuisine = require("../model/Cuisine");
 const Table = require("../model/Table");
 const Order = require("../model/Order");
-const { log10 } = require("chart.js/helpers");
 
 // Login ------------------------------------------------------------
 router.post("/login", async (req, res) => {
@@ -31,10 +30,18 @@ router.post("/login", async (req, res) => {
 
         res.cookie("token", token, {
             httpOnly: true,
-            secure: true,
+            secure: true, // Change to false in development if using HTTP
             sameSite: 'Strict',
             maxAge: 60 * 60 * 1000 // 1hr
         });
+
+        const io = req.app.get('socketio');
+        io.emit("login_success", {
+            id: waiterLogin._id.toString(),
+            name: waiterLogin.firstName + " " + waiterLogin.lastName
+        });
+
+        console.log(`Waiter logged in: ${waiterLogin.firstName} ${waiterLogin.lastName}`);
 
         return res.status(200).json({
             message: 'Login successful',
@@ -132,13 +139,17 @@ router.get("/fetch-items/dessert", async (req, res) => {
 // Table
 router.get("/get-all-tables", async (req, res) => {
     try {
-        const allTables = await Table.find({})
+        const allTables = await Table.find({});
+
+        // Emit the 'fetch_all_tables' event to the socket.io server
+        const io = req.app.get('socketio');
+        io.emit("fetch_all_tables", { tables: allTables });
+
         res.status(201).json(allTables);
     } catch (error) {
         res.status(500).json({ message: "Internal server error", error: error.message });
     }
 });
-
 router.get("/get-all-tables/status", async (req, res) => {
     try {
         const orders = await Order.find({ status: "Pending" })
@@ -154,12 +165,33 @@ router.get("/get-all-tables/status", async (req, res) => {
     }
 });
 
+// router.get('/orders/by-table/:table', async (req, res) => {
+//     const { table } = req.params;
+
+//     try {
+//         const orders = await Order.find({ table: table, status: "Pending" })
+//             .populate('items.cuisine')
+
+//         return res.status(200).json(orders);
+//     } catch (error) {
+//         console.error(error);
+//         return res.status(500).json({ message: 'Server error: ' + error.message });
+//     }
+// });
+
 router.get('/orders/by-table/:table', async (req, res) => {
     const { table } = req.params;
 
     try {
         const orders = await Order.find({ table: table, status: "Pending" })
-            .populate('items.cuisine')
+            .populate('items.cuisine');
+
+        // Emit the orders_fetched event to the socket.io server
+        const io = req.app.get('socketio');
+        io.emit("orders_fetched", {
+            table,
+            orders
+        });
 
         return res.status(200).json(orders);
     } catch (error) {
@@ -168,7 +200,54 @@ router.get('/orders/by-table/:table', async (req, res) => {
     }
 });
 
+
+
 // Add item to order-list
+// router.post('/orders/add-order/:table', async (req, res) => {
+//     const { table } = req.params;
+//     const { itemId, waiterId } = req.body;
+
+//     try {
+//         const cuisineItem = await Cuisine.findById(itemId);
+//         if (!cuisineItem) {
+//             return res.status(404).json({ message: "Cuisine item not found." });
+//         }
+
+//         let order = await Order.findOne({ table, status: 'Pending', paymentStatus: 'Unpaid' });
+
+//         if (order) {
+//             order.items.push({
+//                 cuisine: itemId,
+//                 price: cuisineItem.price
+//             });
+//         } else {
+//             order = new Order({
+//                 table: table,
+//                 waiter: waiterId,
+//                 items: [{
+//                     cuisine: itemId,
+//                     price: cuisineItem.price
+//                 }],
+//                 status: 'Pending',
+//                 paymentStatus: 'Unpaid'
+//             });
+//         }
+//         const tableStatus = await Table.findOne({ id: table })
+//         tableStatus.currStatus = "occupied"
+//         await tableStatus.save()
+
+//         await order.save();
+
+//         const populatedOrder = await Order.populate(order, { path: 'items.cuisine' });
+
+//         return res.status(201).json(populatedOrder);
+
+//     } catch (error) {
+//         console.error(error);
+//         return res.status(500).json({ message: 'Server error: ' + error.message });
+//     }
+// });
+
 router.post('/orders/add-order/:table', async (req, res) => {
     const { table } = req.params;
     const { itemId, waiterId } = req.body;
@@ -198,13 +277,21 @@ router.post('/orders/add-order/:table', async (req, res) => {
                 paymentStatus: 'Unpaid'
             });
         }
-        const tableStatus = await Table.findOne({ id: table })
-        tableStatus.currStatus = "occupied"
-        await tableStatus.save()
+
+        const tableStatus = await Table.findOne({ id: table });
+        tableStatus.currStatus = "occupied";
+        await tableStatus.save();
 
         await order.save();
 
         const populatedOrder = await Order.populate(order, { path: 'items.cuisine' });
+
+        // Emit the order_added event to the connected clients
+        const io = req.app.get('socketio');
+        io.emit("order_added", {
+            table,
+            order: populatedOrder
+        });
 
         return res.status(201).json(populatedOrder);
 
@@ -334,6 +421,9 @@ router.post("/order/complete/:id", async (req, res) => {
         return res.status(500).json({ message: "Something went wrong", error: error.message });
     }
 });
+
+
+
 
 
 

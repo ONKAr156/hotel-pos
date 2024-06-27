@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom';
 import { useAddOrderMutation } from '../../redux/api/OrderApi';
 import { useSelector } from 'react-redux';
+import io from 'socket.io-client';
 
 const Beverages = () => {
     const [getData, setGetData] = useState([])
@@ -13,7 +14,7 @@ const Beverages = () => {
     const waiterId = data.waiterData.waiterLogin._id
     const [addOrder, { isLoading: isAddingOrder }] = useAddOrderMutation()
 
-
+    const socket = io('http://localhost:3000');
 
     const handleAddOrder = async (id) => {
 
@@ -21,6 +22,10 @@ const Beverages = () => {
             const order = await addOrder({
                 table: tableId, itemId: id, waiterId: waiterId
             }).unwrap();
+            socket.emit('order_added', {
+                table: tableId,
+                order
+            });
             if (order.status === 201) {
                 console.log("Item added successfully:", order.data);
             }
@@ -45,6 +50,15 @@ const Beverages = () => {
         };
 
         fetchData();
+        socket.on('order_added', (data) => {
+            console.log('Order added:', data);
+
+        });
+
+        // Cleanup socket connection on unmount
+        return () => {
+            socket.disconnect();
+        };
     }, []);
 
     return <>

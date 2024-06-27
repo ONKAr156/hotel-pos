@@ -2,7 +2,10 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 
 export const loginApi = createApi({
   reducerPath: 'loginApi',
-  baseQuery: fetchBaseQuery({ baseUrl: 'http://localhost:3000/api/' }),
+  baseQuery: fetchBaseQuery({ 
+    baseUrl: 'http://localhost:3000/api/',
+    credentials: 'include'  // Add this line
+  }),
   endpoints: (builder) => ({
 
     waiterLogin: builder.mutation({
@@ -19,9 +22,7 @@ export const loginApi = createApi({
         body: userData
       })
     }),
-
-
   }),
 });
 
-export const { useWaiterLoginMutation, useAdminLoginMutation } = loginApi
+export const { useWaiterLoginMutation, useAdminLoginMutation } = loginApi;

@@ -3,12 +3,15 @@ import axios from 'axios'
 import { useParams } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 import { useAddOrderMutation } from '../../redux/api/OrderApi'
+import io from 'socket.io-client';
 
 
 const Starter = ({ table }) => {
     const [getData, setGetData] = useState([])
     const [addData, setAddData] = useState()
+    const socket = io('http://localhost:3000');
 
+    
     useEffect(() => {
         const fetchData = async () => {
             try {
@@ -21,6 +24,13 @@ const Starter = ({ table }) => {
         };
 
         fetchData();
+        socket.on('order_added', (data) => {
+            console.log('Order added:', data);
+
+        });
+        return () => {
+            socket.disconnect();
+        };
     }, []);
 
     const params = useParams()
@@ -29,12 +39,17 @@ const Starter = ({ table }) => {
     const tableId = params.id
     const waiterId = data.waiterData.waiterLogin._id
     const [addOrder, { isLoading: isAddingOrder }] = useAddOrderMutation()
+
     const handleAddOrder = async (id) => {
 
         try {
             const order = await addOrder({
                 table: tableId, itemId: id, waiterId: waiterId
             }).unwrap();
+            socket.emit('order_added', {
+                table: tableId,
+                order
+            });
             if (order.status === 201) {
                 console.log("Item added successfully:", order.data);
             }

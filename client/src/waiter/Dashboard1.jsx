@@ -1,13 +1,31 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import { toast } from "react-toastify"
 
 const Dashboard1 = () => {
     const [tData, setTData] = useState([]);
     const [toggle, setToggle] = useState(false);
     const data = useSelector(state => state.waiterData);
     console.log(data.waiterData.waiterLogin.name);
+
+    const navigate = useNavigate()
+
+
+    const handelLogout = async () => {
+        try {
+            const result = await axios.post("http://localhost:3000/api/waiter/logout", {}, {
+                withCredentials: true,
+            })
+            if (result.status === 200) {
+                navigate('/')
+                toast.success("logout success")
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    }
 
     useEffect(() => {
         const getAllTables = async () => {
@@ -40,7 +58,7 @@ const Dashboard1 = () => {
                             className={`w-28 h-12 mt-1 text-end  transition-opacity duration-300 ease-in-out transform 
                                 ${toggle ? '  block ' : 'hidden '}`}
                         >
-                            <button className='text-white bg-slate-600 p-2'>Logout</button>
+                            <button onClick={() => handelLogout()} className='text-white bg-slate-600 p-2'>Logout</button>
                         </div>
                     </div>
                 </header>

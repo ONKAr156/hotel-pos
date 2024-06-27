@@ -1,53 +1,144 @@
-## Features :-
-* Real time  communication (Socket) for table status ⚡⚡
-* Waiter Login 
-* Payment using Razer pay ⚡⚡
-* Cash recipet Print out  PDF ⚡⚡
-* Admin Dashboard  ⚡⚡
-* Highest selling Item ⚡
-* FULly dynamic ⚡
-* Loading animations 
-* Authentications ⚡⚡
-* Table Status 
-* Recipet contents  Date time W-Name items total + GST  = Hotel NAME "IMP" ⚡⚡⚡⚡⚡⚡⚡
-* Admin Add's waiter 
-* Create admin 
-* frammer motion
+# HOTEL-POS System
 
+## Summary
 
-## Tabel 
-* Status = [ Vaccant, Occupied]
-* seating  = [2, 4, 6]
-* table number = manually 
+The HOTEL-POS System is a cutting-edge application designed to streamline the operations of a restaurant for hotel/cafe owners. It provides real-time table status updates, an intuitive admin dashboard, and comprehensive waiter management. With integrated payment processing, printable receipts, and dynamic data visualization, this system enhances both management efficiency and customer satisfaction.
 
+## Features
 
-## Order recipt
-* table Number 
-* Current Time and Date 
-* waiter name  and Hotel name
-* items consumed
-* QR code for Review ==> fill a form which contains email and then send emails to it 
+- **Real-time Communication (Socket) for Table Status** ⚡⚡
+  - Keep track of table status with real-time updates.
+  
+- **Waiter Login**
+  - Exclusive waitstaff access to their own dashboard.
+  
+- **Payment Integration with Razorpay** ⚡⚡
+  - Seamless online payment processing.
+  
+- **Cash Receipt Printout (PDF)** ⚡⚡
+  - Generate PDF receipts for cash transactions.
+  
+- **Admin Dashboard** ⚡⚡
+  - Comprehensive control panel for administrators.
+  
+- **Track Highest Selling Items** ⚡
+  - Identify and analyze top-selling menu items.
+  
+- **Fully Dynamic System** ⚡
+  - Adaptable to changing needs and scalable.
+  
+- **Loading Animations**
+  - Smooth transition animations for a better user experience.
+  
+- **Authentication** ⚡⚡
+  - Secure login and user access control.
+  
+- **Table Status Management**
+  - Manage table occupancy and availability.
+  
+- **Receipt Contents**
+  - Detailed receipts including date, time, waiter name, items, total cost, and GST, prominently featuring the hotel name. ⚡⚡⚡⚡⚡⚡⚡
+  
+- **Admin Adds Waiters**
+  - Functionality for admin to add new waitstaff.
+  
+- **Create Admin Accounts**
+  - Ability to create new admin users.
+  
+- **Frammer Motion**
+  - Enhanced user experience with reactive animations.
 
-## Waiter Profile  i.e schema
-* Name Email and Password (Edit Only Passwword) DOB Number
-* Total Customer's 
-* Date of Joining
-* Address and Aadhar card details
-* ID's ( Documment photos link only for admin)
+## Table Management
 
-## ADMIN Dashboard
-* Login + Logout + Create admin 
-* Create new:- (Cuisine waiter table)
-* Remove waiters 
-* total waiters 
+- **Status:** [Vacant, Occupied]
+- **Seating Capacity:** [2, 4, 6]
+- **Table Number:** Manually assigned
 
-* Monthly data of sales  chart
-* Request for waiters Documments
-* send emails to customers for promotions
+## Order Receipt
 
+- **Table Number**
+- **Current Time and Date**
+- **Waiter Name and Hotel Name**
+- **Items Consumed**
+- **QR Code for Review:**
+  - Leads to a form for customer feedback and collects email addresses to send follow-up emails.
 
+## Waiter Profile (Schema)
 
+- **Name, Email, Password (Editable), DOB, Contact Number**
+- **Total Customers Served**
+- **Date of Joining**
+- **Address and Aadhar Card Details**
+- **Document IDs (Photo links accessible only to admin)**
 
+## Admin Dashboard
 
+- **Login, Logout, Create Admin Accounts**
+- **Create New Entries: (Cuisine, Waiter, Table)**
+- **Remove Waiters**
+- **Total Waiters Count**
+- **Monthly Sales Data Chart**
+- **Request Waiter Documents**
+- **Send Promotional Emails to Customers**
 
+## Getting Started
 
+To get started with this project, follow the instructions below.
+
+### Prerequisites
+
+- Node.js
+- Socket.IO
+- Razorpay account
+- PDF generation library
+- Animation library (Frammer Motion)
+- Database (e.g., MongoDB)
+
+### Installation
+
+1. Clone the repository:
+
+    ```bash
+    git clone https://github.com/ONKAr156/hotel-pos
+    ```
+
+2. Navigate to the project directory:
+
+    ```bash
+     cd client
+     cd server
+    ```
+
+3. Install the dependencies:
+
+    ```bash
+    npm i
+    ```
+
+4. Set up the environment variables (e.g., for Razorpay keys):
+
+    ```bash
+    touch .env
+    ```
+
+   Add your environment variables in the `.env` file.
+
+5. Run the application:
+
+    ```bash
+   client: npm run dev
+   server: nodemon
+    ```
+
+### Usage
+
+- Access the admin dashboard at `/admin-login`.
+- Waiters can log in at `/`.
+- Real-time updates will be visible on the user's dashboard.
+
+### Contributing
+
+Contributions are welcome! Please fork the repository and submit a pull request for review.
+
+### Connect me
+borgaonkar1998@gmail.com

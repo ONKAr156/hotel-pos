@@ -12,9 +12,6 @@ The HOTEL-POS System is a cutting-edge application designed to streamline the op
 - **Waiter Login**
   - Exclusive waitstaff access to their own dashboard.
 
-![Screenshot 2024-06-27 101523](https://github.com/ONKAr156/hotel-pos/assets/125107067/72318bdc-ba84-4be0-bdce-21bb5b7d2dd5)
-
-  
 - **Payment Integration with Razorpay** ⚡⚡
   - Seamless online payment processing.
   
@@ -96,6 +93,14 @@ To get started with this project, follow the instructions below.
 - PDF generation library
 - Animation library (Frammer Motion)
 - Database (e.g., MongoDB)
+
+### Screen-shots
+- Waiter Login
+![Screenshot 2024-06-27 101523](https://github.com/ONKAr156/hotel-pos/assets/125107067/4f5f0738-6486-4b17-a632-785fd948026a)
+
+![Screenshot 2024-06-27 101555](https://github.com/ONKAr156/hotel-pos/assets/125107067/71a09b27-721e-4fc6-8014-a4217dccb31b)
+
+
 
 ### Installation
 

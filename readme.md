@@ -114,9 +114,12 @@ To get started with this project, follow the instructions below.
 
 ![Screenshot 2024-06-27 102035](https://github.com/ONKAr156/hotel-pos/assets/125107067/a1f8670a-c0e5-4cac-9599-e89014dfec61)
 
+- Logout
+
 ![Screenshot 2024-06-27 102114](https://github.com/ONKAr156/hotel-pos/assets/125107067/0d21fee9-0d38-4d08-bdf6-8d5899ce7e5d)
 
 - Responsive
+
 ![Screenshot 2024-06-27 102156](https://github.com/ONKAr156/hotel-pos/assets/125107067/8b0721df-5d54-4e4b-a472-28328d6df289)
 
 ![Screenshot 2024-06-27 102232](https://github.com/ONKAr156/hotel-pos/assets/125107067/6054fbe7-a28e-4dca-8aa6-c91197dcdf87)

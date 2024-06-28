@@ -96,14 +96,17 @@ To get started with this project, follow the instructions below.
 
 ### Screen-shots
 - Waiter Login
+
 ![Screenshot 2024-06-27 101523](https://github.com/ONKAr156/hotel-pos/assets/125107067/4f5f0738-6486-4b17-a632-785fd948026a)
 
 ![Screenshot 2024-06-27 101555](https://github.com/ONKAr156/hotel-pos/assets/125107067/71a09b27-721e-4fc6-8014-a4217dccb31b)
 
 - Table selection
+
 ![Screenshot 2024-06-27 101712](https://github.com/ONKAr156/hotel-pos/assets/125107067/48317291-a533-4eba-9633-3caf522e2bf8)
 
 - Order 
+
 ![Screenshot 2024-06-27 101822](https://github.com/ONKAr156/hotel-pos/assets/125107067/1eb99849-4e44-4902-bde7-9236b1d6f947)
 
 ![Screenshot 2024-06-27 101901](https://github.com/ONKAr156/hotel-pos/assets/125107067/76d0209f-135e-40d1-96f3-3a002ae1ed1a)

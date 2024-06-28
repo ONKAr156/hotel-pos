@@ -11,6 +11,9 @@ The HOTEL-POS System is a cutting-edge application designed to streamline the op
   
 - **Waiter Login**
   - Exclusive waitstaff access to their own dashboard.
+
+  ![Screenshot 2024-06-27 101523](https://github.com/ONKAr156/hotel-pos/assets/125107067/156a2d95-452f-4f03-8308-9ae9273480ca)
+
   
 - **Payment Integration with Razorpay** ⚡⚡
   - Seamless online payment processing.

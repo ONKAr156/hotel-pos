@@ -94,7 +94,9 @@ To get started with this project, follow the instructions below.
 - Animation library (Frammer Motion)
 - Database (e.g., MongoDB)
 
-### Screen-shots
+## Screen-shots
+### Waiter 
+
 - Waiter Login
 
 ![Screenshot 2024-06-27 101523](https://github.com/ONKAr156/hotel-pos/assets/125107067/4f5f0738-6486-4b17-a632-785fd948026a)
@@ -126,6 +128,71 @@ To get started with this project, follow the instructions below.
 ![Screenshot 2024-06-27 102156](https://github.com/ONKAr156/hotel-pos/assets/125107067/8b0721df-5d54-4e4b-a472-28328d6df289)
 
 ![Screenshot 2024-06-27 102232](https://github.com/ONKAr156/hotel-pos/assets/125107067/6054fbe7-a28e-4dca-8aa6-c91197dcdf87)
+
+### Admin
+
+- login
+
+![Screenshot 2024-06-27 100309](https://github.com/ONKAr156/hotel-pos/assets/125107067/6e798127-005c-41f3-9b87-274cb09a3f07)
+
+![Screenshot 2024-06-27 100458](https://github.com/ONKAr156/hotel-pos/assets/125107067/6b5c24c2-f9ff-44d9-88ab-1605fb132c4e)
+
+- Home 
+
+![Screenshot 2024-06-27 100531](https://github.com/ONKAr156/hotel-pos/assets/125107067/fa577c29-b9da-48bf-ab59-4c3239ecfb96)
+
+- waiter details 
+
+![Screenshot 2024-06-27 100602](https://github.com/ONKAr156/hotel-pos/assets/125107067/df47696e-f3ec-427c-b456-059842aca315)
+
+![Screenshot 2024-06-27 101426](https://github.com/ONKAr156/hotel-pos/assets/125107067/c67d6564-0c2e-49d7-9cc3-0b9a5e156763)
+
+![Screenshot 2024-06-27 101452](https://github.com/ONKAr156/hotel-pos/assets/125107067/72485319-2120-4817-9a5d-cbeea99cdab3)
+
+
+
+- Waiter dashboard (Admin)
+
+![Screenshot 2024-06-27 100656](https://github.com/ONKAr156/hotel-pos/assets/125107067/d0ded35d-2db4-4596-b814-bd8891783f34)
+
+- Create New Waiter
+
+![Screenshot 2024-06-27 100723](https://github.com/ONKAr156/hotel-pos/assets/125107067/6fc24193-556c-4e5e-92ae-7fc659cd62ae)
+
+- Add new Cuisine
+
+![Screenshot 2024-06-27 100807](https://github.com/ONKAr156/hotel-pos/assets/125107067/1cf84dd4-3a39-45aa-8e92-43e17ebc4df8)
+
+![Screenshot 2024-06-27 100855](https://github.com/ONKAr156/hotel-pos/assets/125107067/46a47575-0065-4d14-8bb2-7dcc30b933a4)
+
+- Add new Table and table capacity
+
+![Screenshot 2024-06-27 100926](https://github.com/ONKAr156/hotel-pos/assets/125107067/f04436e9-a71e-48c0-b7ef-be537a605b1c)
+
+- Live order
+
+![Screenshot 2024-06-27 101005](https://github.com/ONKAr156/hotel-pos/assets/125107067/8ed9f358-b438-46ee-82f9-e3b477baa3a0)
+
+- Previous Order
+
+![Screenshot 2024-06-27 101033](https://github.com/ONKAr156/hotel-pos/assets/125107067/d6be710e-d405-4ef3-a6e6-db90f029bedf)
+
+![Screenshot 2024-06-27 101128](https://github.com/ONKAr156/hotel-pos/assets/125107067/94dacc91-6c71-4c09-82b1-f9115b12dbfb)
+
+![Screenshot 2024-06-27 101224](https://github.com/ONKAr156/hotel-pos/assets/125107067/2a085955-ea74-4378-89f7-3b081cd0cd08)
+
+- Print the order 
+
+![Screenshot 2024-06-27 101253](https://github.com/ONKAr156/hotel-pos/assets/125107067/3b597154-d6af-4c2a-97b2-3535f0de27e5)
+
+![Screenshot 2024-06-27 101347](https://github.com/ONKAr156/hotel-pos/assets/125107067/52b374e7-7b64-4390-b886-6d2332c4d86b)
+
+
+
+
+
+
+
 
 
 
